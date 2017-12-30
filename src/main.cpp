@@ -3,8 +3,9 @@
 #include "../include/visuals.h" 
 
 
-char *input_file;
-char *input_file2 = NULL;
+char *car = NULL;
+char *trafficlight = NULL;
+
 int main(int argc, char* argv[])
 { 
   // initialize GLUT library state
@@ -29,10 +30,6 @@ int main(int argc, char* argv[])
   glutCreateWindow("Race_Car");
   
   // Configure various properties of the OpenGL rendering context
-  input_file = argv[1];
-  if(argc > 2){
-    input_file2 = argv[2];
-  }
   Setup();
   // Callbacks for the GL and GLUT events:
 

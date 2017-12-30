@@ -3,24 +3,55 @@
 #include <math.h>
 #include <iostream>
 #include <fstream>
-
 #include "GL/freeglut.h"   // - An interface and windows management library
 #include "../include/visuals.h"   // Header file for our OpenGL functions
 #include "../include/Model.h"
 
-std::vector<Model *> models;
-static float tx = 0.0;
-static float rotx = 0.0;
-static bool animate = false;
-static float red = 1.0;
-static float green = 0.0;
-static float blue = 0.0;
 
-extern char * input_file;
-extern char * input_file2;
-double z = 0;
 
 using namespace std;
+
+
+std::vector<Model *> models;
+
+extern char * car;
+extern char * trafficlight;
+double z = 0;
+
+
+float zoom = 150.0f;
+
+
+
+//Grid parameters
+double R = 100.0f;	//radius
+double D = 100.0f;	
+double L = 150.0f;	//lenght
+
+//Move bridge parameters
+float angle = 0.0;
+int full = 0;
+
+void DrawCircle(float cx, float cy, float r, int num_segments) {
+    glBegin(GL_LINE_STRIP);
+    for (int ii = 0; ii < num_segments; ii++)   {
+        float theta = 2.0f * M_PI * float(ii) / float(num_segments);//get the current angle 
+        float x = r * cosf(theta);//calculate the x component 
+        float y = r * sinf(theta);//calculate the y component
+        if(cx > 0){
+        	if(x+cx < cx){
+		       continue;
+		    }
+        }
+        else{
+	    	if(x+cx > cx){
+	       		continue;
+	       	}
+	    }
+        glVertex2f(x + cx, y + cy);//output vertex 
+    }
+    glEnd();
+}
 
 void keimeno(const char *str,float size)
 {
@@ -36,25 +67,72 @@ void keimeno(const char *str,float size)
 
 void Render()
 {    
-  //CLEARS FRAME BUFFER ie COLOR BUFFER& DEPTH BUFFER (1.0)
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);  // Clean up the colour of the window
-													   // and the depth buffer
-  glMatrixMode(GL_MODELVIEW); 
-  glLoadIdentity();
-	
- 
-  
-              
-  for(unsigned int i=0;i<models.size();i++){
-  	 glTranslatef(0.0,0.0,-100.0);
-  	 glRotatef(30,1,0,0);
-  	DisplayModel((*models[i]));
-  }
+	//CLEARS FRAME BUFFER ie COLOR BUFFER& DEPTH BUFFER (1.0)
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);  // Clean up the colour of the window
+						   // and the depth buffer
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	gluLookAt(0.0f, 0.0f,zoom, 0.0f, 0.0f, -5.0f, 0.0f, 1.0f, 0.0f);
 
- 
-  glutSwapBuffers();             // All drawing commands applied to the 
-                                 // hidden buffer, so now, bring forward
-                                 // the hidden buffer and hide the visible one
+
+	glPushMatrix();
+
+	//Draw half circle
+	glTranslatef(0.0,0.0,-500.0);
+	glColor3f(1.0, 0.9, 0.0);
+	DrawCircle(L,0,R,2000);
+	DrawCircle(-L,0,R,2000);
+	DrawCircle(L,0,R+D,2000);
+	DrawCircle(-L,0,R+D,2000);
+
+	//Create brigde
+	glPushMatrix();
+	glRotatef(angle,0,1,0);					
+	glColor3f(1.0,0.0, 0.0);
+	glRectf(-L,R,-L/2,R+D);
+	glEnd();
+	glPopMatrix();
+
+	//Create up road
+	glPushMatrix();
+	glColor3f(1.0, 0.9, 0.0);
+	glBegin(GL_QUAD_STRIP);
+	glVertex2f(-L/2,R);
+	glVertex2f(L,R);
+	glVertex2f(-L/2,R+D);
+	glVertex2f(L,R+D);
+	glEnd();
+	glPopMatrix();
+	
+	//Create down road
+	glPushMatrix();
+	glBegin(GL_QUAD_STRIP);
+	glVertex2f(-L,-R-D);
+	glVertex2f(L,-R-D);
+	glVertex2f(-L,-R);
+	glVertex2f(L,-R);
+	glEnd();
+	glPopMatrix();
+
+
+	//Create Start Line
+	float X = 0.0f;
+	for(int i=0;i<7;i++){
+		X += D/14;
+		glColor3f(1.0,1.0,1.0);
+		glRectf(-L/2,-R-X,-L/3,-R-X+D/14);
+		X += D/14;	
+	}
+
+	
+	//DisplayModel((*models[0]),-L/1.5,-R-3*D/14,0);
+	//DisplayModel((*models[0]),-L/1.5,-R-8*D/14,0);
+
+	glPopMatrix();
+
+	glutSwapBuffers();             // All drawing commands applied to the 
+	 // hidden buffer, so now, bring forward
+     // the hidden buffer and hide the visible one
 }
 
 //-----------------------------------------------------------
@@ -70,15 +148,28 @@ void Resize(int w, int h)
   glMatrixMode(GL_PROJECTION); 
   glLoadIdentity();
   //glOrtho (-50.0f, 50.0f, -50.0f, 50.0f,-500.0f,500.0f);
-  gluPerspective(60.0, (float)w/(float)h, 1.0, 500.0);
+  gluPerspective(60.0, (float)w/(float)h, 1.0, 0.0);
 }
 
 
 
 void Idle()
 {
-
-	;//glutPostRedisplay();
+	if(full == 0){
+		angle += 0.1;
+		if(angle > 5){
+			full = 1;
+			angle = 4;
+		}
+	}
+	else{
+		angle -= 0.1;
+		if(angle < 0){
+			full = 0;
+			angle = 0;
+		}
+	}
+	glutPostRedisplay();
 }
 
 
@@ -87,36 +178,34 @@ void Keyboard(unsigned char key,int x,int y)
 {
 	switch(key)
 	{
-		case 'a':{
-			z-= 100.0;
-			break;
-		}
-		case 'd':{
-			z+= 100.0;
-			break;
-		}
 		default: 
 			return;
 	}
-	//glutPostRedisplay();
+	glutPostRedisplay();
 
 }
 
 void Mouse(int button,int state,int x,int y)
 {
-	 if(state == GLUT_DOWN && button == GLUT_LEFT_BUTTON)
-	 {
-         ;//glutPostRedisplay();
-	 }
+	//WHEELUP for zoom out
+	if (button == 3){
+		zoom += 20.0f;
+	}
+	//WHHELDOWN for zoom in
+	else if(button == 4){
+		zoom -=20.0f;
+	}
+   glutPostRedisplay();
 }
 
 
 void Setup()  // TOUCH IT !! 
 { 
-	ReadModel(input_file);
+	//Read model
+	/*ReadModel(input_file);
 	if(input_file2 != NULL)
 		ReadModel(input_file2);
-
+	*/
 	//Parameter handling
 	glShadeModel (GL_SMOOTH);
 	
@@ -124,35 +213,6 @@ void Setup()  // TOUCH IT !!
 	glDepthFunc(GL_LEQUAL);  //renders a fragment if its z value is less or equal of the stored value
 	glClearDepth(1);
     
-	// polygon rendering mode
-	glEnable(GL_COLOR_MATERIAL);
-	glColorMaterial( GL_FRONT, GL_AMBIENT_AND_DIFFUSE );
-  
-	//Set up light source
-	GLfloat light_position[] = { 0.0, 30.0, 50.0, 0.0 };
-	glLightfv( GL_LIGHT0, GL_POSITION, light_position);
-
-	GLfloat ambientLight[] = { 0.3, 0.3, 0.3, 1.0 };
-	GLfloat diffuseLight[] = { 0.8, 0.8, 0.8, 1.0 };
-	GLfloat specularLight[] = { 1.0, 1.0, 1.0, 1.0 };
-
-	   
-	glLightfv( GL_LIGHT0, GL_AMBIENT, ambientLight );
-	glLightfv( GL_LIGHT0, GL_DIFFUSE, diffuseLight );
-	
-
-	glEnable(GL_LIGHTING);
-	glEnable(GL_LIGHT0);
-
-	glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
-	
-	glEnable(GL_CULL_FACE);
-	glFrontFace(GL_CW);
-
-	//01
-	glFrontFace(GL_CCW);
- 
-
 	// Black background
 	glClearColor(0.0f,0.0f,0.0f,1.0f);
 
@@ -209,12 +269,15 @@ void ReadModel(char *object_file)
 	models.push_back(md);
 }
 
-void DisplayModel(Model model)
+void DisplayModel(Model model,float x,float y,float z)
 {
 
 	glPushMatrix();
+	glTranslatef(x,y,z);
+	glScalef(0.3,0.3,0.3);
+	glRotated(180,0,0,1);
+	glColor3f(1.0,0.0,0.2);
 	glBegin(GL_TRIANGLES);
-
 	vector<Vertex> *v = model.Get_Vertices();
 	vector<Face> * f = model.Get_Faces();
 	for (unsigned int i = 0; i < f->size() ; i++)
@@ -226,7 +289,6 @@ void DisplayModel(Model model)
 		j = (*f)[i].Get_p3()-1;
 		glVertex3f((*v)[j].Get_x(),(*v)[j].Get_y(),(*v)[j].Get_z());
 	}
-
 	glEnd();
 	glPopMatrix();
 } 

@@ -24,8 +24,9 @@ void Idle();
 void ReadModel(char *);
 //Function for reading a model file
 
-void DisplayModel(Model);
+void DisplayModel(Model,float,float,float);
 // Function for displaying a model
+ 
 
 void Keyboard(unsigned char key,int x,int y);
 // Function for handling keyboard events.
