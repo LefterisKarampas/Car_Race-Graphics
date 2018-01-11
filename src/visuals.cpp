@@ -6,8 +6,7 @@
 #include "GL/freeglut.h"   // - An interface and windows management library
 #include "../include/visuals.h"   // Header file for our OpenGL functions
 #include "../include/Model.h"
-
-
+#include "../include/custom_vertexes.h"
 
 using namespace std;
 
@@ -26,7 +25,7 @@ float zoom = 150.0f;
 //Grid parameters
 double R = 100.0f;	//radius
 double D = 100.0f;	
-double L = 150.0f;	//lenght
+double L = 150.0f;	//length
 
 //Move bridge parameters
 float angle = 0.0;
@@ -41,12 +40,12 @@ void DrawCircle(float cx, float cy, float r, int num_segments) {
         if(cx > 0){
         	if(x+cx < cx){
 		       continue;
-		    }
+		    	}
         }
-        else{
+        else {
 	    	if(x+cx > cx){
 	       		continue;
-	       	}
+	      }
 	    }
         glVertex2f(x + cx, y + cy);//output vertex 
     }
@@ -60,7 +59,7 @@ void keimeno(const char *str,float size)
 	glScalef(size,size,size);
 
 	for (int i=0;i<strlen(str);i++)
-	  glutStrokeCharacter(GLUT_STROKE_ROMAN,str[i]);
+	  glutStrokeCharacter(GLUT_STROKE_ROMAN, str[i]);
 	glPopMatrix();
 
 }
@@ -76,16 +75,25 @@ void Render()
 
 
 	glPushMatrix();
-
-	//Draw half circle
 	glTranslatef(0.0,0.0,-500.0);
 	glColor3f(1.0, 0.9, 0.0);
-	DrawCircle(L,0,R,2000);
-	DrawCircle(-L,0,R,2000);
-	DrawCircle(L,0,R+D,2000);
-	DrawCircle(-L,0,R+D,2000);
 
-	//Create brigde
+	int num_segments = 5000;
+	//Draw right half circle
+	glPushMatrix();
+	glBegin(GL_LINE_STRIP);
+	TwoSemiCirclesVertexes(L,0,R,R+D,num_segments,true);
+	glEnd();
+	glPopMatrix();
+
+	//Draw left half circle
+	glPushMatrix();
+	glBegin(GL_LINE_STRIP);
+	TwoSemiCirclesVertexes(-L,0,R,R+D,num_segments,false);
+	glEnd();
+	glPopMatrix();
+
+	// Create brigde
 	glPushMatrix();
 	glRotatef(angle,0,1,0);					
 	glColor3f(1.0,0.0, 0.0);
@@ -155,15 +163,16 @@ void Resize(int w, int h)
 
 void Idle()
 {
+	float angleRate = 0.05;
 	if(full == 0){
-		angle += 0.1;
+		angle += angleRate;
 		if(angle > 5){
 			full = 1;
 			angle = 4;
 		}
 	}
 	else{
-		angle -= 0.1;
+		angle -= angleRate;
 		if(angle < 0){
 			full = 0;
 			angle = 0;
