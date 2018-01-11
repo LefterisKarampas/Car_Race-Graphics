@@ -7,6 +7,9 @@
 #include "../include/visuals.h"   // Header file for our OpenGL functions
 #include "../include/Model.h"
 #include "../include/custom_vertexes.h"
+#include "../include/bridge.h"
+
+#define BRIDGE_SPEED 0.01
 
 using namespace std;
 
@@ -20,16 +23,15 @@ double z = 0;
 
 float zoom = 150.0f;
 
-
+int dt = 1;
 
 //Grid parameters
 double R = 100.0f;	//radius
 double D = 100.0f;	
 double L = 150.0f;	//length
 
-//Move bridge parameters
-float angle = 0.0;
-int full = 0;
+//Bridge object
+Bridge bridge(BRIDGE_SPEED);
 
 void DrawCircle(float cx, float cy, float r, int num_segments) {
     glBegin(GL_LINE_STRIP);
@@ -93,13 +95,8 @@ void Render()
 	glEnd();
 	glPopMatrix();
 
-	// Create brigde
-	glPushMatrix();
-	glRotatef(angle,0,1,0);					
-	glColor3f(1.0,0.0, 0.0);
-	glRectf(-L,R,-L/2,R+D);
-	glEnd();
-	glPopMatrix();
+	// Create bridge
+	bridge.Render(R,D,L);
 
 	//Create up road
 	glPushMatrix();
@@ -163,21 +160,7 @@ void Resize(int w, int h)
 
 void Idle()
 {
-	float angleRate = 0.05;
-	if(full == 0){
-		angle += angleRate;
-		if(angle > 5){
-			full = 1;
-			angle = 4;
-		}
-	}
-	else{
-		angle -= angleRate;
-		if(angle < 0){
-			full = 0;
-			angle = 0;
-		}
-	}
+	bridge.Move(dt);
 	glutPostRedisplay();
 }
 
