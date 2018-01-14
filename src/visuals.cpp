@@ -188,6 +188,12 @@ void Idle()
 {
 	bridge.Move(dt);
 	if (!turning) {
+		if (next_turn == 0) {
+			test_car.ForwardRight(dt);
+		}
+		else {
+			test_car.ForwardLeft(dt);
+		}
 		if (test_car.ReachedPosition(turns[next_turn][0],
 																 turns[next_turn][1],
 																 turns[next_turn][2])) 
@@ -195,25 +201,20 @@ void Idle()
 				turning = true;
 				next_turn = (next_turn + 1) % 4;
 		}
-		else
-		{
-			test_car.Forward(dt);
-		}
 	}
 	else {
+		if (next_turn == 1) {
+			test_car.TurnUp(R+D, dt);
+		}
+		else {
+			test_car.TurnDown(R+D, dt);
+		}
 		if (test_car.ReachedPosition(turns[next_turn][0],
 																 turns[next_turn][1],
 																 turns[next_turn][2])) 
 		{
 				turning = false;
 				next_turn = (next_turn + 1) % 4;
-				if (next_turn == 0) {
-					test_car.ResetDirection();
-				}
-		}
-		else
-		{
-			test_car.Turn(R+D, dt);
 		}
 	}
 	glutPostRedisplay();

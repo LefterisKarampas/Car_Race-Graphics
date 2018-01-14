@@ -63,9 +63,14 @@ void TestCar::Render(float startX, float startY, double R, double D, double L) {
 }
 
 bool TestCar::ReachedPosition(float x, float y1, float y2) {
-  fprintf(stderr, "NoseX %f NoseY %f x %f y1 %f y2 %f\n",
-          noseX_, noseY_, x, y1, y2);
-  return (noseX_ >= x && noseY_ >= y1 && noseY_ <= y2);
+  // fprintf(stderr, "%d NoseX %f NoseY %f x %f y1 %f y2 %f\n",
+  //         direction_, noseX_, noseY_, x, y1, y2);
+  if (direction_ == 1) {
+    return (noseX_ >= x && noseY_ >= y1 && noseY_ <= y2);
+  }
+  else {
+    return (noseX_ <= x && noseY_ >= y1 && noseY_ <= y2); 
+  }
 }
 
 void TestCar::ResetDirection() {

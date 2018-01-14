@@ -12,34 +12,64 @@
 
 Vehicle::Vehicle(float u, float u_max)
   : x_(0.0f), z_(0.0f), u_(u), u_max_(u_max),
-    theta_(0), t_(0), turning_(false), direction_(1) {}
+    theta_(0), turning_(false), direction_(1) {}
 
 Vehicle::~Vehicle() {}
 
-void Vehicle::Forward(float dt) {
-  x_ += (u_ * direction_) * dt;
+void Vehicle::ForwardLeft(float dt) {
+  direction_ = -1;
+  x_ -= u_ * dt;
   turning_ = false;
 }
 
-void Vehicle::Turn(float radius, float dt) {
+void Vehicle::ForwardRight(float dt) {
+  direction_ = 1;
+  x_ += u_ * dt;
+  turning_ = false;
+}
+
+void Vehicle::TurnDown(float radius, float dt) {
   if (!turning_) {
     // just started turning
-    direction_ *= -1; // switch direction
-    t_ = 0; // reset time
-    theta_ = M_PI;
-    xOld_ = x_;
-    zOld_ = z_;
+    theta_ = 0;
+    xBeforeTurn_ = x_;
+    zBeforeTurn_ = z_;
   }
 
-  t_ += dt;
-  fprintf(stderr, "In turn\n");
-  float omega = (u_ * direction_) / radius;
-  theta_ += omega * dt;
-  fprintf(stderr, "theta %f\n", theta_);
-  x_ = xOld_ + radius * sinf(theta_);
-  z_ = zOld_ + radius * (cosf(theta_) + 1);
+  float omega = u_ / radius;
+  theta_ -= omega * dt;
+  x_ = xBeforeTurn_ + radius * sinf(theta_);
+  z_ = zBeforeTurn_ + radius * (cosf(theta_) - 1);
   turning_ = true;
+  if (theta_ > (-1)* M_PI / 2) {
+    direction_ = -1;  
+  }
+  else {
+    direction_ = 1;
+  }
 }
+
+void Vehicle::TurnUp(float radius, float dt) {
+  if (!turning_) {
+    // just started turning
+    theta_ = M_PI; // to go upwards
+    xBeforeTurn_ = x_;
+    zBeforeTurn_ = z_;
+  }
+
+  float omega = u_ / radius;
+  theta_ -= omega * dt;
+  x_ = xBeforeTurn_ + radius * sinf(theta_);
+  z_ = zBeforeTurn_ + radius * (cosf(theta_) + 1);
+  turning_ = true;
+  if (theta_ < M_PI / 2) {
+    direction_ = -1;  
+  }
+  else {
+    direction_ = 1;
+  }
+}
+
 
 bool Vehicle::Moving() {
   return (u_ == 0);
