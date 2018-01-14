@@ -12,6 +12,7 @@ class TestCar : public Vehicle
     void Render(float startX, float startY, double R, double D, double L);
     bool ReachedPosition(float x, float y1, float y2);
     void ResetDirection();
+    float MinusHeight(float D, float num);
 
   private:
     void drawBall();

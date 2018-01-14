@@ -23,11 +23,12 @@ void TestCar::Render(float startX, float startY, double R, double D, double L) {
   float height = D * hR_;
   if (direction_ == 1) {
     noseX_ = startX + x_ + length;
+    noseY_ = startY + z_ + height;
   }
   else {
     noseX_ = startX + x_;
+    noseY_ = startY + z_;
   }
-  noseY_ = startY + z_ + height;
 
   glPushMatrix();
 
@@ -38,8 +39,22 @@ void TestCar::Render(float startX, float startY, double R, double D, double L) {
   else if (z_ < 0) {
     z_ = 0;
   }
-  glTranslatef(x_, z_, -6.0f); // move
-  // glRotatef(theta_,0.0f,0.0f,1.0f); // rotate
+
+  float toCenterX;
+  if (theta_ != 0) {
+    if (x_ > 0) {
+      toCenterX = L;
+    }
+    else {
+      toCenterX = -L;
+    }
+  }
+  // glTranslatef(toCenterX, 0.0f, 0.0f); // move back to center
+  // double degrees = theta_ * 180 / M_PI;
+  // fprintf(stderr, "%f %f\n", theta_, degrees);
+  // glRotatef(degrees,0.0f,0.0f,1.0f); // rotate
+  // glTranslatef(-toCenterX, 0.0f, 0.0f); // move back to center
+  glTranslatef(x_, z_, 0.0f); // move
 
   glBegin(GL_POLYGON);
   
@@ -62,8 +77,8 @@ void TestCar::Render(float startX, float startY, double R, double D, double L) {
 }
 
 bool TestCar::ReachedPosition(float x, float y1, float y2) {
-  // fprintf(stderr, "%d NoseX %f NoseY %f x %f y1 %f y2 %f\n",
-  //         direction_, noseX_, noseY_, x, y1, y2);
+  // fprintf(stderr, "x %f %d NoseX %f NoseY %f x %f y1 %f y2 %f\n",
+  //         x_, direction_, noseX_, noseY_, x, y1, y2);
   if (direction_ == 1) {
     return (noseX_ >= x && noseY_ >= y1 && noseY_ <= y2);
   }
@@ -74,6 +89,11 @@ bool TestCar::ReachedPosition(float x, float y1, float y2) {
 
 void TestCar::ResetDirection() {
   direction_ = 1;
+}
+
+float TestCar::MinusHeight(float D, float num) {
+  float height = D * hR_;
+  return num - height;
 }
 
 void TestCar::drawBall() {
