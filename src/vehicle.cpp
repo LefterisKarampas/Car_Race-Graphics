@@ -1,4 +1,3 @@
-#include "../include/vehicle.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -7,8 +6,8 @@
 #include <iostream>
 #include <fstream>
 #include "GL/freeglut.h"
+#include "../include/vehicle.h"
 #include "../include/visuals.h"
-#include "../include/Model.h"
 
 Vehicle::Vehicle(float u, float u_max)
   : x_(0.0f), z_(0.0f), u_(u), u_max_(u_max),
