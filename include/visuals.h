@@ -3,7 +3,6 @@
 #define BLUE 3
 #define WHITE 4
 
-#include "Model.h"
 
 
 //-------- Functions --------------------------------
@@ -21,13 +20,7 @@ void Setup();
 
 void Idle();
 
-void ReadModel(char *);
-//Function for reading a model file
-
-void DisplayModel(Model,float,float,float);
-// Function for displaying a model
  
-
 void Keyboard(int key,int x,int y);
 // Function for handling keyboard events.
 

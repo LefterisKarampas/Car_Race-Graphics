@@ -1,4 +1,3 @@
-#include "../include/custom_vertexes.h"
 #include <stdio.h>     // - Just for some ASCII messages
 #include <string.h>
 #include <math.h>
@@ -6,6 +5,7 @@
 #include <fstream>
 #include "GL/freeglut.h"   // - An interface and windows management library
 #include "../include/visuals.h"   // Header file for our OpenGL functions
+#include "../include/custom_vertexes.h"
 
 void increase(int* i) {
   *i = *i + 1;

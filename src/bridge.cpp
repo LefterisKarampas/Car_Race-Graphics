@@ -8,7 +8,6 @@
 #include <fstream>
 #include "GL/freeglut.h"   // - An interface and windows management library
 #include "../include/visuals.h"   // Header file for our OpenGL functions
-#include "../include/Model.h"
 #include "../include/custom_vertexes.h"
 
 #define ANGLE_MAX 6

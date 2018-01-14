@@ -1,4 +1,3 @@
-#include "../include/test_car.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -7,8 +6,8 @@
 #include <iostream>
 #include <fstream>
 #include "GL/freeglut.h"
+#include "../include/test_car.h"
 #include "../include/visuals.h"
-#include "../include/Model.h"
 
 #define NOSE_RATIOA 0.8f
 #define NOSE_RATIOB 0.6f
