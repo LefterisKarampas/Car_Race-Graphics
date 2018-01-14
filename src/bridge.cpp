@@ -42,6 +42,7 @@ void Bridge::Render(double R, double D, double L) {
   glEnd();
   glPopMatrix();
 }
+
 void Bridge::Move(float dt) {
   if (!moving_) {
     if (nextMoveTime_ == (time_t) 0) {

@@ -28,7 +28,7 @@ void DisplayModel(Model,float,float,float);
 // Function for displaying a model
  
 
-void Keyboard(unsigned char key,int x,int y);
+void Keyboard(int key,int x,int y);
 // Function for handling keyboard events.
 
 void Mouse(int button,int state,int x,int y); 
