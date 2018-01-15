@@ -49,12 +49,12 @@ void TestCar::Render(float startX, float startY, double R, double D, double L) {
       toCenterX = -L;
     }
   }
-  // glTranslatef(toCenterX, 0.0f, 0.0f); // move back to center
-  // double degrees = theta_ * 180 / M_PI;
+  glTranslatef(toCenterX, 0.0f, 0.0f); // move back to center
+  double degrees = theta_ * 180 / M_PI;
   // fprintf(stderr, "%f %f\n", theta_, degrees);
-  // glRotatef(degrees,0.0f,0.0f,1.0f); // rotate
-  // glTranslatef(-toCenterX, 0.0f, 0.0f); // move back to center
+  glTranslatef(-toCenterX, 0.0f, 0.0f); // move back to center
   glTranslatef(x_, z_, 0.0f); // move
+  glRotatef(degrees,0.0f,1.0f,0.0f); // rotate
 
   glBegin(GL_POLYGON);
   

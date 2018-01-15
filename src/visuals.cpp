@@ -14,12 +14,15 @@
 #include "../include/Map.h"
 #include "../include/Crash.h"
 #include "../include/traffic_light.h"
+#include "../include/CarModel.h"
 
 
 #define BRIDGE_SPEED 0.01
 #define SPEED_UP 0.5
 #define LEFT_ARROW 37
 #define RIGHT_ARROW 39
+#define INIT_SPEED 3
+#define MAX_SPEED 10
 
 using namespace std;
 
@@ -55,6 +58,8 @@ Bridge bridge(BRIDGE_SPEED);
 
 //Vehicle object
 TestCar test_car(1, 8, 0.3, 0.4, 1);
+CarModel* car_model1;
+CarModel* car_model2;
 
 
 void Render()
@@ -98,7 +103,11 @@ void Render()
 	turns[3][2] = -R;
 
 
-
+	car_model1->Render(R,D,L);
+	if (car_model1->ReachedPosition(L + L/2 + 120, 0, 0)) {
+		fprintf(stderr, "ReachedPosition\n");
+	}
+	car_model2->Render(R,D,L);
 	// Draw vehicle
 	//test_car.Render(-L/2,-R-D,R,D,L);
 	// test_car.Render(L,-R-D,R,D,L);
@@ -130,6 +139,7 @@ void Resize(int w, int h)
 
 void Idle()
 {
+	car_model1->ForwardRight(dt);
 	bridge.Move(dt);
 	if (!turning) {
 		if (next_turn == 0) {
@@ -171,10 +181,10 @@ void Keyboard(int key,int x,int y)
 	switch(key)
 	{
 		case GLUT_KEY_LEFT:
-			test_car.SpeedDown(SPEED_UP);
+			car_model1->SpeedDown(SPEED_UP);
 			break;
 		case GLUT_KEY_RIGHT:
-			test_car.SpeedUp(SPEED_UP);
+			car_model1->SpeedUp(SPEED_UP);
 			break;
 		default: 
 			return;
@@ -201,6 +211,8 @@ void Setup()  // TOUCH IT !!
 { 
 	light = new traffic_light(light_input,R,D);
 	car = new Model(car_input);
+	car_model1 = new CarModel(INIT_SPEED, MAX_SPEED, car, -L/2 - 120,-R-D, 40);
+	car_model2 = new CarModel(INIT_SPEED, MAX_SPEED, car, -L/2 - 120,-R-D, -40);
 	//Parameter handling
 	glShadeModel (GL_SMOOTH);
 	
@@ -210,6 +222,7 @@ void Setup()  // TOUCH IT !!
     
 	// Black background
 	glClearColor(0.0f,0.0f,0.0f,1.0f);
+	// glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
 
 }
 
