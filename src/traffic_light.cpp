@@ -22,8 +22,10 @@ void drawCircle(GLfloat x, GLfloat y, GLfloat radius)
 }
 
 
-traffic_light::traffic_light(char *input_file){
+traffic_light::traffic_light(char *input_file,double R,double D){
 	this->model = new Model(input_file);
+	this->R = R;
+	this->D = D;
 }
 
 traffic_light::~traffic_light(){
@@ -32,6 +34,9 @@ traffic_light::~traffic_light(){
 
 void traffic_light::Render(char color){
 
+	glPushMatrix();
+	glTranslatef(0,0,-(R+D+10));
+	glScalef(3,3,3);
 	//Draw traffic_light
 	glPushMatrix();
 	glColor3f(0.3f, 0.3f, 0.3f);
@@ -64,5 +69,7 @@ void traffic_light::Render(char color){
 	else
 		glColor3f(0.0,0.0,0.0);
 	drawCircle(0,38,1.5);
+	glPopMatrix();
+
 	glPopMatrix();
 }

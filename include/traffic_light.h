@@ -5,8 +5,10 @@
 class traffic_light{
 	Model *model;
 	char color;
+	double R;
+	double D;
 public:
-	traffic_light(char *);
+	traffic_light(char *,double R,double D);
 	~traffic_light();
 	void Render(char);
 };

@@ -19,6 +19,7 @@ Bridge::Bridge(float u)
   : angle_(0.0), full_(false), u_(u), moving_(false), 
     nextWarningTime_(0), nextMoveTime_(0)
 {
+  this->color = 'g';
   srand(time(NULL));
 }
 
@@ -29,15 +30,15 @@ void Bridge::Render(double R, double D, double L) {
   glRotatef(-90,1,0,0);
   glRotatef(angle_,0,1,0);
   if (moving_) {
-    glColor3f(1.0,0.0,0.0);
+    this->color = 'r';
   }
   else if (time(NULL) >= nextWarningTime_) {
-   glColor3f(1.0,0.5,0.0); 
+    this->color = 'o';
   }
   else {
-   glColor3f(0.0,1.0,0.0);  
+    this->color = 'g';
   }
-
+   glColor3f(1.0,0.0,1.0);
   glRectf(-L,R,-L/2,R+D);
   glEnd();
   glPopMatrix();
@@ -76,4 +77,9 @@ void Bridge::Move(float dt) {
 
 bool Bridge::Moving() {
   return moving_;
+}
+
+
+char Bridge::Get_Color(){
+  return this->color;
 }

@@ -64,7 +64,7 @@ void Render()
 						   // and the depth buffer
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	gluLookAt(0.0f ,270.0f,350.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
+	gluLookAt(0.0f ,300.0f,380.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
 
 
 	glPushMatrix();
@@ -80,6 +80,11 @@ void Render()
 	car->Render();
 	glPopMatrix();
 	
+	// Draw bridge
+	bridge.Render(R,D,L);
+	light->Render(bridge.Get_Color());
+
+
 	turns[1][0] = L;
 	turns[1][1] = R;
 	turns[1][2] = R+D;
@@ -92,8 +97,6 @@ void Render()
 	turns[3][1] = -R-D;
 	turns[3][2] = -R;
 
-	// Draw bridge
-	bridge.Render(R,D,L);
 
 
 	// Draw vehicle
@@ -196,7 +199,7 @@ void Mouse(int button,int state,int x,int y)
 
 void Setup()  // TOUCH IT !! 
 { 
-	light = new traffic_light(light_input);
+	light = new traffic_light(light_input,R,D);
 	car = new Model(car_input);
 	//Parameter handling
 	glShadeModel (GL_SMOOTH);
