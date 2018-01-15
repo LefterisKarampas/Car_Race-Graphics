@@ -10,7 +10,7 @@
 #include "../include/visuals.h"   // Header file for our OpenGL functions
 #include "../include/custom_vertexes.h"
 
-#define ANGLE_MAX 6
+#define ANGLE_MAX 40
 #define MIN_WARNING_DELAY 2
 #define MAX_WARNING_DELAY 6
 #define WARNING_TIME 3
@@ -28,9 +28,11 @@ Bridge::~Bridge() {}
 void Bridge::Render(double R, double D, double L) {
   glPushMatrix();
   glRotatef(-90,1,0,0);
-  glRotatef(angle_,0,1,0);
+  // glRotatef(angle_,0,1,0);
+  float up = 0.0f;
   if (moving_) {
     this->color = 'r';
+    up = angle_;
   }
   else if (time(NULL) >= nextWarningTime_) {
     this->color = 'o';
@@ -38,8 +40,12 @@ void Bridge::Render(double R, double D, double L) {
   else {
     this->color = 'g';
   }
-   glColor3f(1.0,0.0,1.0);
-  glRectf(-L,R,-L/2,R+D);
+  glColor3f(1.0,0.0,1.0);
+  glBegin(GL_POLYGON);
+  glVertex3f(-L,R,up);
+  glVertex3f(-L,R+D,up);
+  glVertex3f(-L/2,R+D,0);
+  glVertex3f(-L/2,R,0);
   glEnd();
   glPopMatrix();
 }

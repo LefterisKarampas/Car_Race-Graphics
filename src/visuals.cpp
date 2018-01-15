@@ -17,7 +17,7 @@
 #include "../include/CarModel.h"
 
 
-#define BRIDGE_SPEED 0.01
+#define BRIDGE_SPEED 5
 #define SPEED_UP 0.5
 #define LEFT_ARROW 37
 #define RIGHT_ARROW 39
