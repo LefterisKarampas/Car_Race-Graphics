@@ -8,7 +8,6 @@
 #include "../include/custom_vertexes.h"
 #include "../include/bridge.h"
 #include "../include/vehicle.h"
-#include "../include/test_car.h"
 #include "../include/Model.h"
 #include "../include/Score.h"
 #include "../include/Map.h"
@@ -18,11 +17,8 @@
 
 
 #define BRIDGE_SPEED 5
-#define SPEED_UP 0.5
 #define LEFT_ARROW 37
 #define RIGHT_ARROW 39
-#define INIT_SPEED 30
-#define MAX_SPEED 50
 
 using namespace std;
 
@@ -31,7 +27,13 @@ double z = 0;
 
 float zoom = 150.0f;
 
-int dt = 1;
+float dt = 1;
+float vA = 30;
+float vOr = 40;
+float vMax = 80;
+float tEid = 5;
+float a = 3;
+float dtMax = 3;
 
 extern char * light_input;
 extern char *car_input;
@@ -52,11 +54,10 @@ traffic_light *light;
 
 char color = 'g';
 //Bridge object
-Bridge bridge(BRIDGE_SPEED);
+Bridge bridge(BRIDGE_SPEED, tEid);
 
 Model* car;
 //Vehicle object
-TestCar test_car(1, 8, 0.3, 0.4, 1);
 CarModel* car_model1;
 CarModel* car_model2;
 
@@ -75,7 +76,7 @@ void Render()
 
 	glPushMatrix();
 	map.Render();
-	light->Render(color);
+	// light->Render(color);
 
 	glPushMatrix();
 	//glTranslatef(-20,-20,0);
@@ -98,8 +99,6 @@ void Render()
 	car_model1->Render(R,D,L);
 	car_model2->Render(R,D,L);
 	// Draw vehicle
-	//test_car.Render(-L/2,-R-D,R,D,L);
-	// test_car.Render(L,-R-D,R,D,L);
 	if (reset) {
 		glPushMatrix();
 		glTranslatef(0,0,-100);
@@ -109,8 +108,8 @@ void Render()
 		glPopMatrix();
 		glPopMatrix();
 
-		car_model1->Reset(INIT_SPEED);
-		car_model2->Reset(INIT_SPEED);
+		car_model1->Reset(vA);
+		car_model2->Reset(vA);
 
 		reset = false;
 	}
@@ -140,22 +139,28 @@ void Resize(int w, int h)
 
 void Idle()
 {
-	if (car_model1->ReachedRange(-L + 130, -L/2 + 130)) {
+	bridge.Move(dt);
+	bool crash1 = car_model1->Move(turns,2*R+D,dt);
+	bool crash2 = car_model2->Move(turns,2*R+D/4,dt);
+
+	if (crash1) {
+		reset = true;
+	}
+
+	if (car_model1->ReachedRange(-L + 3*L/2, -L/2 + 3*L/2)) {
 		if (bridge.Moving()) {
 			reset = true;
 		}
 	}
-	if (car_model2->ReachedRange(-L + 130, -L/2 + 130)) {
+	if (car_model2->ReachedRange(-L + 3*L/2, -L/2 + 3*L/2)) {
 		if (bridge.Moving()) {
 			car_model2->Stop();
 		}
 		else {
-			car_model2->SetSpeed(INIT_SPEED);
+			car_model2->SetSpeed(vA);
 		}
 	}
-	bridge.Move(dt);
-	car_model1->Move(turns,2*R+D,dt);
-	car_model2->Move(turns,2*R+D/4,dt);
+
 	glutPostRedisplay();
 }
 
@@ -166,10 +171,32 @@ void Keyboard(int key,int x,int y)
 	switch(key)
 	{
 		case GLUT_KEY_LEFT:
-			car_model1->SpeedDown(SPEED_UP);
+			car_model1->SpeedDown(a);
 			break;
 		case GLUT_KEY_RIGHT:
-			car_model1->SpeedUp(SPEED_UP);
+			car_model1->SpeedUp(a);
+			break;
+		case GLUT_KEY_UP:
+			if (dt >= 2.0f) {
+				dt += 0.1f;
+			}
+			else {
+				dt += 0.2f;	
+			}
+			if (dt > dtMax) {
+				dt = dtMax;
+			}
+			break;
+		case GLUT_KEY_DOWN:
+			if (dt <= 2.0f) {
+				dt -= 0.1f;
+			}
+			else {
+				dt -= 0.2f;	
+			}
+			if (dt < 1) {
+				dt = 1;
+			}
 			break;
 		default: 
 			return;
@@ -197,13 +224,13 @@ void Setup()  // TOUCH IT !!
 	turns = (float*) malloc(2*sizeof(float)); // remember to free this
 	light = new traffic_light(light_input,R,D);
 	car = new Model(car_input);
-	car_model1 = new CarModel(INIT_SPEED, MAX_SPEED, car, -L/2 - 120,-R-D, 40);
-	car_model2 = new CarModel(INIT_SPEED, MAX_SPEED, car, -L/2 - 120,-R-D, -40);
+	car_model1 = new CarModel(vA, vMax, vOr, car, -L/2 - 120,-R-D, 40);
+	car_model2 = new CarModel(vA, vMax, vOr, car, -L/2 - 120,-R-D, -40);
 	//Parameter handling
 	glShadeModel (GL_SMOOTH);
 	
-	glEnable(GL_DEPTH_TEST);
-	glDepthFunc(GL_LEQUAL);  //renders a fragment if its z value is less or equal of the stored value
+	// glEnable(GL_DEPTH_TEST);
+	// glDepthFunc(GL_LEQUAL);  //renders a fragment if its z value is less or equal of the stored value
 	glClearDepth(1);
     
 	// Black background

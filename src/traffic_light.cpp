@@ -45,31 +45,25 @@ void traffic_light::Render(char color){
 	glPopMatrix();
 
 	//Draw green light
-	glPushMatrix();
 	if(color == 'g')
 		glColor3f(0.0,1.0,0.0);
 	else
 		glColor3f(0.0,0.0,0.0);
 	drawCircle(0,30,1.5);
-	glPopMatrix();
 
 	//Draw orange light
-	glPushMatrix();
 	if(color == 'o')
 		glColor3f(1.0,0.5,0.0);
 	else
 		glColor3f(0.0,0.0,0.0);
 	drawCircle(0,34,1.5);
-	glPopMatrix();
 
 	//Draw red light
-	glPushMatrix();
 	if(color == 'r')
 		glColor3f(1.0,0.0,0.0);
 	else
 		glColor3f(0.0,0.0,0.0);
 	drawCircle(0,38,1.5);
-	glPopMatrix();
 
 	glPopMatrix();
 }

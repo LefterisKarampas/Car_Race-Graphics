@@ -7,14 +7,14 @@
 class CarModel : public Vehicle
 {
   public:
-    CarModel(float u, float u_max, Model* model,
+    CarModel(float u, float u_max, float uOp, Model* model,
       float startX, float startY, float startZ);
     ~CarModel();
     void Reset(float u);
     void Render(double R, double D, double L);
     bool ReachedPosition(float x);
     bool ReachedRange(float x1, float x2);
-    void Move(float* turns, float radius, float dt);
+    bool Move(float* turns, float radius, float dt);
 
   private:
     Model* model_;

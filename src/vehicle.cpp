@@ -9,21 +9,12 @@
 #include "../include/vehicle.h"
 #include "../include/visuals.h"
 
-Vehicle::Vehicle(float u, float u_max)
-  : x_(0.0f), z_(0.0f), u_(u), u_max_(u_max),
+Vehicle::Vehicle(float u, float u_max, float uOp)
+  : x_(0.0f), z_(0.0f), u_(u), u_max_(u_max), uOp_(uOp),
     theta_(0), turning_(false), direction_(1),
-    up_(false), down_(false) {}
+    up_(false), down_(false), crash_(false) {}
 
 Vehicle::~Vehicle() {}
-
-void Vehicle::ForwardLeft(float dt) {
-  theta_ = M_PI;
-  up_ = false;
-  down_ = false;
-  direction_ = -1;
-  x_ -= u_ * dt;
-  turning_ = false;
-}
 
 void Vehicle::Reset(float u) {
   x_ = 0.0f;
@@ -34,15 +25,28 @@ void Vehicle::Reset(float u) {
   direction_ = 1;
   up_ = false;
   down_ = false;
+  crash_ = false;
+}
+
+void Vehicle::ForwardLeft(float dt) {
+  theta_ = M_PI;
+  up_ = false;
+  down_ = false;
+  direction_ = -1;
+  x_ -= u_ * dt;
+  turning_ = false;
+  crash_ = false;
 }
 
 void Vehicle::ForwardRight(float dt) {
+  z_ = 0.0f;
   up_ = false;
   down_ = false;
   theta_ = 0;
   direction_ = 1;
   x_ += u_ * dt;
   turning_ = false;
+  crash_ = false;
 }
 
 void Vehicle::TurnDown(float radius, float dt) {
@@ -59,6 +63,8 @@ void Vehicle::TurnDown(float radius, float dt) {
   x_ = xBeforeTurn_ + radius * sinf(theta_);
   z_ = zBeforeTurn_ + radius * (1 + cosf(theta_));
   turning_ = true;
+
+  crash_ = (u_ >= uOp_);
 }
 
 void Vehicle::TurnUp(float radius, float dt) {
@@ -75,6 +81,8 @@ void Vehicle::TurnUp(float radius, float dt) {
   x_ = xBeforeTurn_ + radius * sinf(theta_);
   z_ = zBeforeTurn_ + radius * (cosf(theta_) - 1);
   turning_ = true;
+
+  crash_ = (u_ >= uOp_);
 }
 
 
@@ -98,6 +106,10 @@ void Vehicle::SpeedDown(float a) {
 
 void Vehicle::SetSpeed(float u) {
   u_ = u;
+}
+
+float Vehicle::GetSpeed() {
+  return u_;
 }
 
 void Vehicle::Stop() {

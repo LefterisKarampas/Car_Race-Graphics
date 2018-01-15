@@ -11,13 +11,12 @@
 #include "../include/custom_vertexes.h"
 
 #define ANGLE_MAX 40
-#define MIN_WARNING_DELAY 4
-#define MAX_WARNING_DELAY 8
-#define WARNING_TIME 3
+#define MIN_WARNING_DELAY 6
+#define MAX_WARNING_DELAY 12
 
-Bridge::Bridge(float u) 
+Bridge::Bridge(float u, float tEid) 
   : angle_(0.0), full_(false), u_(u), moving_(false), 
-    nextWarningTime_(0), nextMoveTime_(0), t_(0)
+    nextWarningTime_(0), nextMoveTime_(0), t_(0), warning_time(tEid)
 {
   this->color = 'g';
   srand(time(NULL));
@@ -26,8 +25,6 @@ Bridge::Bridge(float u)
 Bridge::~Bridge() {}
 
 void Bridge::Render(double R, double D, double L) {
-  glPushMatrix();
-  glRotatef(-90,1,0,0);
   // glRotatef(angle_,0,1,0);
   float up = 0.0f;
   if (moving_) {
@@ -40,6 +37,8 @@ void Bridge::Render(double R, double D, double L) {
   else {
     this->color = 'g';
   }
+  glPushMatrix();
+  glRotatef(-90,1,0,0);
   glColor3f(1.0,0.0,1.0);
   glBegin(GL_POLYGON);
   glVertex3f(-L,R,up);
@@ -55,12 +54,12 @@ void Bridge::Move(float dt) {
   if (!moving_) {
     if (nextMoveTime_ == 0) {
       nextWarningTime_ = t_ + (rand() % (MAX_WARNING_DELAY + 1 - MIN_WARNING_DELAY)) + MIN_WARNING_DELAY;
-      nextMoveTime_ =  nextWarningTime_ + WARNING_TIME;
+      nextMoveTime_ =  nextWarningTime_ + warning_time;
     }
     else if (t_ >= nextMoveTime_) {
       moving_ = true;
-      nextWarningTime_ = 0;
-      nextMoveTime_ = 0;
+      nextWarningTime_ = MAX_WARNING_DELAY + 1;
+      nextMoveTime_ = nextWarningTime_ + warning_time;
     }
   }
   else {

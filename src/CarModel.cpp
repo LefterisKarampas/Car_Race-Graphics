@@ -8,9 +8,9 @@
 #include "GL/freeglut.h"
 #include "../include/CarModel.h"
 
-CarModel::CarModel(float u, float u_max, Model* model,
+CarModel::CarModel(float u, float u_max, float uOp, Model* model,
   float startX, float startY, float startZ)
-  : Vehicle(u, u_max), model_(model),
+  : Vehicle(u, u_max, uOp), model_(model),
     startX_(startX), startY_(startY), startZ_(startZ),
     turning_(false), next_turn(0) {}
 
@@ -68,7 +68,7 @@ bool CarModel::ReachedRange(float x1, float x2) {
   }
 }
 
-void CarModel::Move(float* turns, float radius, float dt) {
+bool CarModel::Move(float* turns, float radius, float dt) {
   if (!turning_) {
     if (next_turn == 0) {
       ForwardRight(dt);
@@ -92,7 +92,10 @@ void CarModel::Move(float* turns, float radius, float dt) {
     if (ReachedPosition(turns[next_turn])) 
     {
         turning_ = false;
+        direction_ = 1;
         next_turn = (next_turn + 1) % 2;
     }
   }
+
+  return crash_;
 }
