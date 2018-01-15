@@ -16,6 +16,7 @@ class Bridge {
     bool moving_;
     bool full_;
     float u_;
+    int t_;
     time_t nextWarningTime_;
     time_t nextMoveTime_;
     char color;

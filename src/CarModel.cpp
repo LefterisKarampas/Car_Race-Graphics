@@ -17,6 +17,12 @@ CarModel::CarModel(float u, float u_max, Model* model,
 CarModel::~CarModel()
 {}
 
+void CarModel::Reset(float u) {
+  Vehicle::Reset(u);
+  turning_ = false;
+  next_turn = 0;
+}
+
 void CarModel::Render(double R, double D, double L)
 {
   glPushMatrix();
@@ -51,6 +57,14 @@ bool CarModel::ReachedPosition(float x) {
     else {
       return x >= x_;
     }
+  }
+}
+
+bool CarModel::ReachedRange(float x1, float x2) {
+  if (direction_ == 1 || turning_)
+    return false;
+  else {
+    return x1 <= x_ && x_ <= x2;
   }
 }
 

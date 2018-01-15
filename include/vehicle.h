@@ -7,6 +7,7 @@ class Vehicle
   public:
     Vehicle(float u, float u_max);
     ~Vehicle();
+    void Reset(float u);
     void ForwardLeft(float dt);
     void ForwardRight(float dt);
     void TurnDown(float radius, float dt);
@@ -14,6 +15,8 @@ class Vehicle
     bool Moving();
     void SpeedUp(float a);
     void SpeedDown(float a);
+    void SetSpeed(float u);
+    void Stop();
     virtual bool ReachedPosition(float x) = 0;
 
   protected:

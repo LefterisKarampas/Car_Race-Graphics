@@ -60,6 +60,8 @@ TestCar test_car(1, 8, 0.3, 0.4, 1);
 CarModel* car_model1;
 CarModel* car_model2;
 
+bool reset = false;
+
 
 void Render()
 {
@@ -98,8 +100,20 @@ void Render()
 	// Draw vehicle
 	//test_car.Render(-L/2,-R-D,R,D,L);
 	// test_car.Render(L,-R-D,R,D,L);
+	if (reset) {
+		glPushMatrix();
+		glTranslatef(0,0,-100);
+		glScalef(12,12,12);
+		glRotatef(0,1,0,0);
+		crash.Render();
+		glPopMatrix();
+		glPopMatrix();
 
-	glPopMatrix();
+		car_model1->Reset(INIT_SPEED);
+		car_model2->Reset(INIT_SPEED);
+
+		reset = false;
+	}
 
 	glutSwapBuffers(); // All drawing commands applied to the 
 	// hidden buffer, so now, bring forward
@@ -126,6 +140,19 @@ void Resize(int w, int h)
 
 void Idle()
 {
+	if (car_model1->ReachedRange(-L + 130, -L/2 + 130)) {
+		if (bridge.Moving()) {
+			reset = true;
+		}
+	}
+	if (car_model2->ReachedRange(-L + 130, -L/2 + 130)) {
+		if (bridge.Moving()) {
+			car_model2->Stop();
+		}
+		else {
+			car_model2->SetSpeed(INIT_SPEED);
+		}
+	}
 	bridge.Move(dt);
 	car_model1->Move(turns,2*R+D,dt);
 	car_model2->Move(turns,2*R+D/4,dt);

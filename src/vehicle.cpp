@@ -25,6 +25,17 @@ void Vehicle::ForwardLeft(float dt) {
   turning_ = false;
 }
 
+void Vehicle::Reset(float u) {
+  x_ = 0.0f;
+  z_ = 0.0f;
+  u_ = u;
+  theta_ = 0;
+  turning_ = false;
+  direction_ = 1;
+  up_ = false;
+  down_ = false;
+}
+
 void Vehicle::ForwardRight(float dt) {
   up_ = false;
   down_ = false;
@@ -83,4 +94,12 @@ void Vehicle::SpeedDown(float a) {
   if (u_ < 0) {
     u_ = 0;
   }
+}
+
+void Vehicle::SetSpeed(float u) {
+  u_ = u;
+}
+
+void Vehicle::Stop() {
+  u_ = 0;
 }
