@@ -26,6 +26,7 @@ Bridge::~Bridge() {}
 
 void Bridge::Render(double R, double D, double L) {
   glPushMatrix();
+  glRotatef(-90,1,0,0);
   glRotatef(angle_,0,1,0);
   if (moving_) {
     glColor3f(1.0,0.0,0.0);

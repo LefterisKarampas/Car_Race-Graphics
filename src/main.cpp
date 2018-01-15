@@ -3,8 +3,8 @@
 #include "../include/visuals.h" 
 
 
-char *car = NULL;
-char *trafficlight = NULL;
+char * light_input;
+char *car_input;
 
 int main(int argc, char* argv[])
 { 
@@ -28,6 +28,14 @@ int main(int argc, char* argv[])
   
   // Create and label the main window
   glutCreateWindow("Race_Car");
+
+  if(argc >= 3){
+    light_input = argv[1];
+    car_input = argv[2];
+  }
+  else{
+    exit(1);
+  }
   
   // Configure various properties of the OpenGL rendering context
   Setup();

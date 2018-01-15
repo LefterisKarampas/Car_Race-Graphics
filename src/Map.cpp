@@ -15,6 +15,8 @@ Map::~Map(){
 
 void Map::Render(){
 
+	glPushMatrix();
+	glRotatef(-90,1,0,0);
 	glColor3f(0.0,0.0,1.0);
 	//Create down road
 	glPushMatrix();
@@ -59,4 +61,6 @@ void Map::Render(){
 		glRectf(-L/2,-R-X,-L/3,-R-X+D/14);
 		X += D/14;	
 	}
+
+	glPopMatrix();
 }

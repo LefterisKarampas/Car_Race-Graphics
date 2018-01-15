@@ -9,6 +9,12 @@
 #include "../include/bridge.h"
 #include "../include/vehicle.h"
 #include "../include/test_car.h"
+#include "../include/Model.h"
+#include "../include/Score.h"
+#include "../include/Map.h"
+#include "../include/Crash.h"
+#include "../include/traffic_light.h"
+
 
 #define BRIDGE_SPEED 0.01
 #define SPEED_UP 0.5
@@ -24,6 +30,9 @@ float zoom = 150.0f;
 
 int dt = 1;
 
+extern char * light_input;
+extern char *car_input;
+
 //Grid parameters
 double R = 100.0f;	//radius
 double D = 100.0f;	
@@ -34,23 +43,19 @@ float turns[4][3];
 int next_turn = 0;
 bool turning = false;
 
+Map map(R,D,L);
+Score score;
+Crash crash;
+traffic_light *light;
+Model *car;
+
+char color = 'g';
 //Bridge object
 Bridge bridge(BRIDGE_SPEED);
 
 //Vehicle object
 TestCar test_car(1, 8, 0.3, 0.4, 1);
 
-
-void keimeno(const char *str,float size)
-{
-
-	glPushMatrix();
-	glScalef(size,size,size);
-
-	for (int i=0;i<strlen(str);i++)
-	  glutStrokeCharacter(GLUT_STROKE_ROMAN, str[i]);
-	glPopMatrix();
-}
 
 void Render()
 {
@@ -59,57 +64,30 @@ void Render()
 						   // and the depth buffer
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	gluLookAt(0.0f, 0.0f,zoom, 0.0f, 0.0f, -5.0f, 0.0f, 1.0f, 0.0f);
+	gluLookAt(0.0f ,250.0f,350.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
 
 
 	glPushMatrix();
-	glTranslatef(0.0,0.0,-500.0);
-	glColor3f(1.0, 0.9, 0.0);
+	map.Render();
+	light->Render(color);
 
-	//Create down road
 	glPushMatrix();
-	glBegin(GL_QUAD_STRIP);
-	glVertex2f(-L,-R-D);
-	glVertex2f(L,-R-D);
-	glVertex2f(-L,-R);
-	glVertex2f(L,-R);
-	glEnd();
+	//glTranslatef(-20,-20,0);
+	glScalef(0.2,0.2,0.2);
+	glRotatef(-90,1.0,0.0,0.0);
+	glRotatef(180,0.0,0.0,1.0);
+	glColor3f(0.1f, 0.3f, 0.3f);
+	car->Render();
 	glPopMatrix();
-	turns[0][0] = L;
-	turns[0][1] = -R-D;
-	turns[0][2] = -R;
-
-	int num_segments = 5000;
-	//Draw right half circle
-	glPushMatrix();
-	glBegin(GL_LINE_STRIP);
-	TwoSemiCirclesVertexes(L,0,R,R+D,num_segments,true);
-	glEnd();
-	glPopMatrix();
+	
 	turns[1][0] = L;
 	turns[1][1] = R;
 	turns[1][2] = R+D;
 
-	//Create up road
-	glPushMatrix();
-	glColor3f(1.0, 0.9, 0.0);
-	glBegin(GL_QUAD_STRIP);
-	glVertex2f(-L/2,R);
-	glVertex2f(L,R);
-	glVertex2f(-L/2,R+D);
-	glVertex2f(L,R+D);
-	glEnd();
-	glPopMatrix();
 	turns[2][0] = -L;
 	turns[2][1] = R;
 	turns[2][2] = R+D;
 
-	//Draw left half circle
-	glPushMatrix();
-	glBegin(GL_LINE_STRIP);
-	TwoSemiCirclesVertexes(-L,0,R,R+D,num_segments,false);
-	glEnd();
-	glPopMatrix();
 	turns[3][0] = -L;
 	turns[3][1] = -R-D;
 	turns[3][2] = -R;
@@ -117,17 +95,9 @@ void Render()
 	// Draw bridge
 	bridge.Render(R,D,L);
 
-	//Create Start Line
-	float X = 0.0f;
-	for(int i=0;i<7;i++){
-		X += D/14;
-		glColor3f(1.0,1.0,1.0);
-		glRectf(-L/2,-R-X,-L/3,-R-X+D/14);
-		X += D/14;	
-	}
 
 	// Draw vehicle
-	test_car.Render(-L/2,-R-D,R,D,L);
+	//test_car.Render(-L/2,-R-D,R,D,L);
 	// test_car.Render(L,-R-D,R,D,L);
 
 	glPopMatrix();
@@ -226,6 +196,8 @@ void Mouse(int button,int state,int x,int y)
 
 void Setup()  // TOUCH IT !! 
 { 
+	light = new traffic_light(light_input);
+	car = new Model(car_input);
 	//Parameter handling
 	glShadeModel (GL_SMOOTH);
 	

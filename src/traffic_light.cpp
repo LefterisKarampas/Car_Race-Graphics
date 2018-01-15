@@ -35,7 +35,7 @@ void traffic_light::Render(char color){
 	//Draw traffic_light
 	glPushMatrix();
 	glColor3f(0.3f, 0.3f, 0.3f);
-	glRotatef(90,0.0,1.0,0.0);
+	//glRotatef(90,0.0,1.0,0.0);
 	this->model->Render();
 	glPopMatrix();
 
