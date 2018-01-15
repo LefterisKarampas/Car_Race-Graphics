@@ -76,14 +76,14 @@ void TestCar::Render(float startX, float startY, double R, double D, double L) {
 
 }
 
-bool TestCar::ReachedPosition(float x, float y1, float y2) {
+bool TestCar::ReachedPosition(float x) {
   // fprintf(stderr, "x %f %d NoseX %f NoseY %f x %f y1 %f y2 %f\n",
   //         x_, direction_, noseX_, noseY_, x, y1, y2);
   if (direction_ == 1) {
-    return (noseX_ >= x && noseY_ >= y1 && noseY_ <= y2);
+    return (noseX_ >= x);
   }
   else {
-    return (noseX_ <= x && noseY_ >= y1 && noseY_ <= y2); 
+    return (noseX_ <= x); 
   }
 }
 

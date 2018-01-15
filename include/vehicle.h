@@ -14,7 +14,7 @@ class Vehicle
     bool Moving();
     void SpeedUp(float a);
     void SpeedDown(float a);
-    virtual bool ReachedPosition(float x, float y1, float y2) = 0;
+    virtual bool ReachedPosition(float x) = 0;
 
   protected:
     float xBeforeTurn_;
@@ -25,6 +25,8 @@ class Vehicle
     float u_max_;
     float theta_;
     bool turning_;
+    bool up_;
+    bool down_;
     short int direction_;
 };
 

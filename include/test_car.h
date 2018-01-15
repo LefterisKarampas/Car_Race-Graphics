@@ -10,7 +10,7 @@ class TestCar : public Vehicle
               float lRatio, float dRatio);
     ~TestCar();
     void Render(float startX, float startY, double R, double D, double L);
-    bool ReachedPosition(float x, float y1, float y2);
+    bool ReachedPosition(float x);
     void ResetDirection();
     float MinusHeight(float D, float num);
 

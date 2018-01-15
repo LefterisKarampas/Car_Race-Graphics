@@ -11,18 +11,23 @@
 
 Vehicle::Vehicle(float u, float u_max)
   : x_(0.0f), z_(0.0f), u_(u), u_max_(u_max),
-    theta_(0), turning_(false), direction_(1) {}
+    theta_(0), turning_(false), direction_(1),
+    up_(false), down_(false) {}
 
 Vehicle::~Vehicle() {}
 
 void Vehicle::ForwardLeft(float dt) {
-  theta_ = 0;
+  theta_ = M_PI;
+  up_ = false;
+  down_ = false;
   direction_ = -1;
   x_ -= u_ * dt;
   turning_ = false;
 }
 
 void Vehicle::ForwardRight(float dt) {
+  up_ = false;
+  down_ = false;
   theta_ = 0;
   direction_ = 1;
   x_ += u_ * dt;
@@ -32,43 +37,33 @@ void Vehicle::ForwardRight(float dt) {
 void Vehicle::TurnDown(float radius, float dt) {
   if (!turning_) {
     // just started turning
-    theta_ = 0;
     xBeforeTurn_ = x_;
     zBeforeTurn_ = z_;
   }
 
+  up_ = false;
+  down_ = true;
   float omega = u_ / radius;
-  theta_ -= omega * dt;
+  theta_ += omega * dt;
   x_ = xBeforeTurn_ + radius * sinf(theta_);
-  z_ = zBeforeTurn_ + radius * (cosf(theta_) - 1);
+  z_ = zBeforeTurn_ + radius * (1 + cosf(theta_));
   turning_ = true;
-  if (theta_ > (-1)* M_PI / 2) {
-    direction_ = -1;  
-  }
-  else {
-    direction_ = 1;
-  }
 }
 
 void Vehicle::TurnUp(float radius, float dt) {
   if (!turning_) {
     // just started turning
-    theta_ = 0; // to right
     xBeforeTurn_ = x_;
     zBeforeTurn_ = z_;
   }
 
+  up_ = true;
+  down_ = false;
   float omega = u_ / radius;
   theta_ += omega * dt;
   x_ = xBeforeTurn_ + radius * sinf(theta_);
-  z_ = zBeforeTurn_ + radius * (1 - cosf(theta_));
+  z_ = zBeforeTurn_ + radius * (cosf(theta_) - 1);
   turning_ = true;
-  if (theta_ < M_PI / 2) {
-    direction_ = 1;  
-  }
-  else {
-    direction_ = -1;
-  }
 }
 
 

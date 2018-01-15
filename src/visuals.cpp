@@ -21,8 +21,8 @@
 #define SPEED_UP 0.5
 #define LEFT_ARROW 37
 #define RIGHT_ARROW 39
-#define INIT_SPEED 3
-#define MAX_SPEED 10
+#define INIT_SPEED 30
+#define MAX_SPEED 50
 
 using namespace std;
 
@@ -42,20 +42,19 @@ double D = 100.0f;
 double L = 150.0f;	//length
 
 //turns coordinates
-float turns[4][3];
+float* turns;
 int next_turn = 0;
-bool turning = false;
 
 Map map(R,D,L);
 Score score;
 Crash crash;
 traffic_light *light;
-Model *car;
 
 char color = 'g';
 //Bridge object
 Bridge bridge(BRIDGE_SPEED);
 
+Model* car;
 //Vehicle object
 TestCar test_car(1, 8, 0.3, 0.4, 1);
 CarModel* car_model1;
@@ -82,31 +81,19 @@ void Render()
 	glRotatef(-90,1.0,0.0,0.0);
 	glRotatef(180,0.0,0.0,1.0);
 	glColor3f(0.1f, 0.3f, 0.3f);
-	car->Render();
 	glPopMatrix();
 	
 	// Draw bridge
 	bridge.Render(R,D,L);
 	light->Render(bridge.Get_Color());
 
+	float placementOffset = 80 - L/2;
 
-	turns[1][0] = L;
-	turns[1][1] = R;
-	turns[1][2] = R+D;
-
-	turns[2][0] = -L;
-	turns[2][1] = R;
-	turns[2][2] = R+D;
-
-	turns[3][0] = -L;
-	turns[3][1] = -R-D;
-	turns[3][2] = -R;
+	turns[0] = L + placementOffset + 2*L;
+	turns[1] = -L + placementOffset + L;
 
 
 	car_model1->Render(R,D,L);
-	if (car_model1->ReachedPosition(L + L/2 + 120, 0, 0)) {
-		fprintf(stderr, "ReachedPosition\n");
-	}
 	car_model2->Render(R,D,L);
 	// Draw vehicle
 	//test_car.Render(-L/2,-R-D,R,D,L);
@@ -139,38 +126,9 @@ void Resize(int w, int h)
 
 void Idle()
 {
-	car_model1->ForwardRight(dt);
 	bridge.Move(dt);
-	if (!turning) {
-		if (next_turn == 0) {
-			test_car.ForwardRight(dt);
-		}
-		else {
-			test_car.ForwardLeft(dt);
-		}
-		if (test_car.ReachedPosition(turns[next_turn][0],
-																 turns[next_turn][1],
-																 turns[next_turn][2])) 
-		{
-				turning = true;
-				next_turn = (next_turn + 1) % 4;
-		}
-	}
-	else {
-		if (next_turn == 1) {
-			test_car.TurnUp(R+D, dt);
-		}
-		else {
-			test_car.TurnDown(R+D, dt);
-		}
-		if (test_car.ReachedPosition(turns[next_turn][0],
-																 turns[next_turn][1],
-																 turns[next_turn][2])) 
-		{
-				turning = false;
-				next_turn = (next_turn + 1) % 4;
-		}
-	}
+	car_model1->Move(turns,2*R+D,dt);
+	car_model2->Move(turns,2*R+D/4,dt);
 	glutPostRedisplay();
 }
 
@@ -209,6 +167,7 @@ void Mouse(int button,int state,int x,int y)
 
 void Setup()  // TOUCH IT !! 
 { 
+	turns = (float*) malloc(2*sizeof(float)); // remember to free this
 	light = new traffic_light(light_input,R,D);
 	car = new Model(car_input);
 	car_model1 = new CarModel(INIT_SPEED, MAX_SPEED, car, -L/2 - 120,-R-D, 40);
