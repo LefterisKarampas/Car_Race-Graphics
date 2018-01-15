@@ -6,8 +6,6 @@
 #include "../include/Vector.h"
 #include "Vector.cpp"
 #include "GL/freeglut.h"   // - An interface and windows management library
-
-
 using namespace std;
 
 
