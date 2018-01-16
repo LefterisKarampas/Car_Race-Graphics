@@ -69,6 +69,9 @@ float eye_y = 300.0f;
 float eye_z = 380.0f;
 float board_rotate = 0;
 int dif_level = 0;
+int players = 1;
+
+
 void Render()
 {
 	//CLEARS FRAME BUFFER ie COLOR BUFFER& DEPTH BUFFER (1.0)
@@ -80,7 +83,14 @@ void Render()
 
 
 	glPushMatrix();
+
+	glPushMatrix();
+	if(v){
+		glTranslatef(10,0,-15);
+		glScalef(1.35,1.35,1.35);
+	}
 	map.Render();
+	glPopMatrix();
 	// light->Render(color);
 
 	glPushMatrix();
@@ -92,17 +102,26 @@ void Render()
 	glPopMatrix();
 	
 	// Draw bridge
+	glPushMatrix();
+	if(v){
+		glTranslatef(10,0,-15);
+		glScalef(1.35,1.35,1.35);
+	}
 	bridge->Render(R,D,L);
 	light->Render(bridge->Get_Color());
-
+	glPopMatrix();
 	float placementOffset = 80 - L/2;
 
 	turns[0] = L + placementOffset + 2*L;
 	turns[1] = -L + placementOffset + L;
 
-
+	glPushMatrix();
+	if(v){
+		glTranslatef(0,0,220);
+	}
 	car_model1->Render(R,D,L);
 	car_model2->Render(R,D,L);
+	glPopMatrix();
 	// Draw vehicle
 	if (reset || crash_flag) {
 		if(crash_flag){
@@ -189,18 +208,26 @@ void Idle()
 			}
 		}
 		if (car_model2->ReachedRange(-L + 3*L/2, -L/2 + 3*L/2)) {
-			if (bridge->Closing()) {
-				car_model2->Stop();
+			if(players == PLAYER2){
+				if (bridge->Moving()) {
+					crash_flag = true;
+					count = COUNTDOWN;
+				}
 			}
-			else {
-				car_model2->SetSpeed(vA);
+			else{
+				if (bridge->Closing()) {
+					car_model2->Stop();
+				}
+				else {
+					car_model2->SetSpeed(vA);
+				}
 			}
 		}
 		bridge->Move(dt);
 		bool crash1 = car_model1->Move(turns,2*R+D,dt);
 		bool crash2 = car_model2->Move(turns,2*R+D/4,dt);
 
-		if (crash1) {
+		if (crash1 || (crash2 && players == PLAYER2)) {
 			crash_flag = true;
 			count = COUNTDOWN;
 		}
@@ -287,7 +314,7 @@ void Setup()  // TOUCH IT !!
 
 }
 
-void MenuSelect(int choice)
+void SelectLevel(int choice)
 {
 	switch (choice) {
 		case EASY : 
@@ -327,8 +354,25 @@ void MenuSelect(int choice)
 			dif_level = choice;
 			break;
 	}
-	glPopMatrix();
+}
 
+
+void SelectPlayers(int choice)
+{
+	switch (choice) {
+		case PLAYER1 : 
+			players = PLAYER1;
+			reset = true;
+			count = COUNTDOWN;
+			start = 0;
+			break;
+		case PLAYER2 : 
+			players = PLAYER2;
+			reset = true;
+			count = COUNTDOWN;
+			start = 0;
+			break;
+	}
 }
 
 
@@ -364,7 +408,28 @@ void MyKeyboardFunc(unsigned char Key, int x, int y){
 		}
 		case 'e':{
 			dif_level = (dif_level +1) % 3;
-			MenuSelect(dif_level);
+			SelectLevel(dif_level);
+			break;
+		}
+		case 'a':{
+			if((players == PLAYER2) && start){
+				car_model2->SpeedDown(d);
+			}
+			break;
+		}
+		case 'd':{
+			if((players == PLAYER2) && start){
+				car_model2->SpeedUp(a);
+			}
+			break;
+		}
+		case 'p':{
+			if(players == PLAYER1){
+				SelectPlayers(PLAYER2);
+			}
+			else{
+				SelectPlayers(PLAYER1);
+			}
 			break;
 		}
 	}

@@ -45,13 +45,16 @@ int main(int argc, char* argv[])
   glutKeyboardFunc(MyKeyboardFunc);
   glutMouseFunc(Mouse);
 
-  glutCreateMenu(MenuSelect);
+  glutCreateMenu(SelectPlayers);
+  glutAddMenuEntry("1 Player",PLAYER1);
+  glutAddMenuEntry("2 Players",PLAYER2);
+  glutAttachMenu(GLUT_LEFT_BUTTON);
+
+
+  glutCreateMenu(SelectLevel);
   glutAddMenuEntry("Easy",EASY);
   glutAddMenuEntry("Medium",MEDIUM);
   glutAddMenuEntry("Hard",HARD);
-  
-	
-  // attach the menu to the right button
   glutAttachMenu(GLUT_RIGHT_BUTTON);
 
   //Enter main event handling loop

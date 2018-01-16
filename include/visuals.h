@@ -2,6 +2,9 @@
 #define MEDIUM 1
 #define HARD 2
 
+#define PLAYER1 1
+#define PLAYER2 2
+
 
 
 //-------- Functions --------------------------------
@@ -26,7 +29,9 @@ void Keyboard(int key,int x,int y);
 void Mouse(int button,int state,int x,int y); 
 // Function for handling mouse events
 
-void MenuSelect(int choice);
+void SelectLevel(int choice);
+
+void SelectPlayers(int choice);
 
 void MyKeyboardFunc(unsigned char Key, int x, int y);
 
