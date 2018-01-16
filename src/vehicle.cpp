@@ -12,7 +12,7 @@
 Vehicle::Vehicle(float u, float u_max, float uOp)
   : x_(0.0f), z_(0.0f), u_(u), u_max_(u_max), uOp_(uOp),
     theta_(0), turning_(false), direction_(1),
-    up_(false), down_(false), crash_(false) {}
+    up_(false), down_(false), crash_(false), rounds_(0) {}
 
 Vehicle::~Vehicle() {}
 
@@ -26,6 +26,7 @@ void Vehicle::Reset(float u) {
   up_ = false;
   down_ = false;
   crash_ = false;
+  rounds_ = 0;
 }
 
 void Vehicle::ForwardLeft(float dt) {
@@ -39,6 +40,9 @@ void Vehicle::ForwardLeft(float dt) {
 }
 
 void Vehicle::ForwardRight(float dt) {
+  if (turning_) {
+    rounds_++;
+  }
   z_ = 0.0f;
   up_ = false;
   down_ = false;
@@ -118,4 +122,8 @@ void Vehicle::Stop() {
 
 void Vehicle::SetvOr(float uop){
   this->uOp_ = uop;
+}
+
+int Vehicle::GetRounds() {
+  return rounds_;
 }
