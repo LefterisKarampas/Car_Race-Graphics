@@ -46,6 +46,7 @@ int main(int argc, char* argv[])
   glutReshapeFunc(Resize);
   glutIdleFunc(Idle);
   glutSpecialFunc(Keyboard);
+  glutKeyboardFunc(MyKeyboardFunc);
   glutMouseFunc(Mouse);
 
   /*glutCreateMenu(MenuSelect);

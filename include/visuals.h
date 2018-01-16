@@ -29,3 +29,6 @@ void Mouse(int button,int state,int x,int y);
 
 void MenuSelect(int choice);
 
+void MyKeyboardFunc(unsigned char Key, int x, int y);
+
+void print_velocity(float current);

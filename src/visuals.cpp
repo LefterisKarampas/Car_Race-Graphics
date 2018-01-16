@@ -16,7 +16,7 @@
 #include "../include/CarModel.h"
 
 
-#define BRIDGE_SPEED 5
+#define BRIDGE_SPEED 2
 #define LEFT_ARROW 37
 #define RIGHT_ARROW 39
 
@@ -28,7 +28,7 @@ double z = 0;
 float zoom = 150.0f;
 
 float dt = 1;
-float vA = 30;
+float vA = 20;
 float vOr = 40;
 float vMax = 80;
 float tEid = 5;
@@ -62,7 +62,11 @@ CarModel* car_model1;
 CarModel* car_model2;
 
 bool reset = false;
-
+bool crash_flag = false;
+int start = 0;
+int v = 0;
+float eye_y = 300.0f; 
+float eye_z = 380.0f;
 
 void Render()
 {
@@ -71,7 +75,7 @@ void Render()
 						   // and the depth buffer
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	gluLookAt(0.0f ,300.0f,380.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
+	gluLookAt(0.0f ,eye_y,eye_z, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
 
 
 	glPushMatrix();
@@ -99,20 +103,30 @@ void Render()
 	car_model1->Render(R,D,L);
 	car_model2->Render(R,D,L);
 	// Draw vehicle
-	if (reset) {
+	if (reset || crash_flag) {
 		glPushMatrix();
 		glTranslatef(0,0,-100);
 		glScalef(12,12,12);
 		glRotatef(0,1,0,0);
-		crash.Render();
-		glPopMatrix();
+		if(crash_flag)
+			crash.Render();
 		glPopMatrix();
 
 		car_model1->Reset(vA);
 		car_model2->Reset(vA);
 
+		if(reset){
+			score.Reset();
+		}
+
 		reset = false;
+		crash_flag = false;
 	}
+	score.Render();
+
+	print_velocity(car_model1->GetSpeed());
+
+	glPopMatrix();
 
 	glutSwapBuffers(); // All drawing commands applied to the 
 	// hidden buffer, so now, bring forward
@@ -139,25 +153,27 @@ void Resize(int w, int h)
 
 void Idle()
 {
-	bridge.Move(dt);
-	bool crash1 = car_model1->Move(turns,2*R+D,dt);
-	bool crash2 = car_model2->Move(turns,2*R+D/4,dt);
+	if(start){
 
-	if (crash1) {
-		reset = true;
-	}
+		if (car_model1->ReachedRange(-L + 3*L/2, -L/2 + 3*L/2)) {
+			if (bridge.Moving()) {
+				crash_flag = true;
+			}
+		}
+		if (car_model2->ReachedRange(-L + 3*L/2, -L/2 + 3*L/2)) {
+			if (bridge.Moving()) {
+				car_model2->Stop();
+			}
+			else {
+				car_model2->SetSpeed(vA);
+			}
+		}
+		bridge.Move(dt);
+		bool crash1 = car_model1->Move(turns,2*R+D,dt);
+		bool crash2 = car_model2->Move(turns,2*R+D/4,dt);
 
-	if (car_model1->ReachedRange(-L + 3*L/2, -L/2 + 3*L/2)) {
-		if (bridge.Moving()) {
-			reset = true;
-		}
-	}
-	if (car_model2->ReachedRange(-L + 3*L/2, -L/2 + 3*L/2)) {
-		if (bridge.Moving()) {
-			car_model2->Stop();
-		}
-		else {
-			car_model2->SetSpeed(vA);
+		if (crash1) {
+			crash_flag = true;
 		}
 	}
 
@@ -245,7 +261,76 @@ void MenuSelect(int choice)
 		default:
 			break;
 	}
-
+	glutPostRedisplay();
 }
 
 
+void MyKeyboardFunc(unsigned char Key, int x, int y){
+	switch(Key){
+		case 's':{
+			start = (start +1) % 2;
+			break;
+		}
+		case 32:{	//SPACEBAR
+			reset = true;
+			start = 0;
+			break;
+		}
+		//Change Camera
+		case 'v':{
+			v = (v+1) % 2;
+			if(v == 0){
+				eye_y = 300.0f;
+				eye_z = 380.0f;
+			}
+			else{
+				;
+			}
+		}
+	}
+	glutPostRedisplay();
+}
+
+void print_velocity(float current){
+	char str[128];
+	sprintf(str,"Current Velocity: %.2lf",current);
+	glPushMatrix();
+	glTranslatef(0,-80,-450);
+	glScalef(1.2,1.2,1.2);
+	glPushMatrix();
+	glTranslatef(-4*L,0,-0);
+	glScalef(4.5,4.5,4.5);
+	glRotatef(-20,1,0,0);
+	//glRotatef(-20,0,1,0);
+	glColor3f(0.0,0.0,0.0);
+	glBegin(GL_LINE_LOOP);
+	glVertex2f(20,0);
+	glVertex2f(20,40);
+	glVertex2f(120,40);
+	glVertex2f(120,0);
+	glEnd();
+	glColor3f(0.5,1.0,0.5);
+	glTranslatef(30,28.0,0.0);
+	GLfloat size = 0.05f;
+	glScalef(size,size,size);
+	for (int i=0;i<strlen(str);i++){
+	  glutStrokeCharacter(GLUT_STROKE_ROMAN,str[i]);
+	}
+	glPopMatrix();
+
+	sprintf(str,"Vop: %.2lf",vOr);
+	glPushMatrix();
+	glTranslatef(-4*L,-L/2,0);
+	glScalef(4.5,4.5,4.5);
+	glRotatef(-20,1,0,0);
+	//glRotatef(-20,0,1,0);
+	glColor3f(1.0,0.0,0.0);
+	glTranslatef(30,28.0,0.0);
+	glScalef(size,size,size);
+	for (int i=0;i<strlen(str);i++){
+	  glutStrokeCharacter(GLUT_STROKE_ROMAN,str[i]);
+	}
+	glPopMatrix();
+
+	glPopMatrix();
+}

@@ -11,6 +11,7 @@ public:
 	void Render();
 	void home();
 	void away();
+	void Reset();
 };
 
 #endif

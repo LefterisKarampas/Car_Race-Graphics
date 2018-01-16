@@ -30,7 +30,7 @@ void CarModel::Render(double R, double D, double L)
   glTranslatef(startX_, startY_, startZ_);
   glTranslatef(x_, 0, z_);
   glScalef(0.3,0.3,0.3);
-  glColor3f(0.1f, 0.3f, 0.3f);
+  glColor3f(0.8f, 0.8f, 0.8f);
   glRotatef(-90,1.0,0.0,0.0);
   glRotatef(180,0.0,0.0,1.0);
   float degrees = theta_ * 180 / M_PI;
