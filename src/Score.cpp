@@ -50,3 +50,19 @@ void Score::Reset(){
 	this->home_score = 0;
 	this->away_score = 0;
 }
+
+int Score::GetHome() {
+	return home_score;
+}
+
+int Score::GetAway() {
+	return away_score;
+}
+
+int Score::SetHome(int home) {
+	home_score = home;
+}
+
+int Score::SetAway(int away) {
+	away_score = away;
+}

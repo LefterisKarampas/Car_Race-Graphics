@@ -36,3 +36,6 @@ void SelectPlayers(int choice);
 void MyKeyboardFunc(unsigned char Key, int x, int y);
 
 void print_velocity(float current);
+
+void SaveScore();
+void LoadScore();
