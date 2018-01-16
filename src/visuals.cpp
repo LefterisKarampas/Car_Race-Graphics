@@ -29,7 +29,7 @@ float zoom = 150.0f;
 
 	
 float dt = 1;
-float vA = 20;
+float vA = 18;
 float vOr = 50;
 float vMax = 60;
 float tEid = 10;
@@ -334,7 +334,7 @@ void SelectLevel(int choice)
 	switch (choice) {
 		case EASY : 
 			d = 7; 
-			tEid = 10;
+			tEid = 13;
 			vOr = 50;
 			car_model1->SetvOr(vOr);
 			car_model2->SetvOr(vOr);
@@ -346,7 +346,7 @@ void SelectLevel(int choice)
 			break;
 		case MEDIUM : 
 			d = 4; 
-			tEid = 8;
+			tEid = 10;
 			vOr = 40;
 			car_model1->SetvOr(vOr);
 			car_model2->SetvOr(vOr);
@@ -358,7 +358,7 @@ void SelectLevel(int choice)
 			break;
 		case HARD :
 			d = a;
-			tEid = 5;
+			tEid = 7;
 			vOr = 30;
 			car_model1->SetvOr(vOr);
 			car_model2->SetvOr(vOr);

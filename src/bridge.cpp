@@ -11,8 +11,8 @@
 #include "../include/custom_vertexes.h"
 
 #define ANGLE_MAX 40
-#define MIN_WARNING_DELAY 6
-#define MAX_WARNING_DELAY 12
+#define MIN_WARNING_DELAY 20
+#define MAX_WARNING_DELAY 60
 
 Bridge::Bridge(float u, float tEid) 
   : angle_(0.0), full_(false), u_(u), moving_(false), 
