@@ -360,10 +360,12 @@ void MyKeyboardFunc(unsigned char Key, int x, int y){
 				eye_z = 100.0f;
 				board_rotate = -45;
 			}
+			break;
 		}
 		case 'e':{
 			dif_level = (dif_level +1) % 3;
 			MenuSelect(dif_level);
+			break;
 		}
 	}
 	glutPostRedisplay();
