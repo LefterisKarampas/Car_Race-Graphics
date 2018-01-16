@@ -19,7 +19,7 @@
 #define BRIDGE_SPEED 1.3
 #define LEFT_ARROW 37
 #define RIGHT_ARROW 39
-
+#define ROUNDS 3
 using namespace std;
 
 
@@ -60,6 +60,7 @@ Model* car;
 CarModel* car_model1;
 CarModel* car_model2;
 Bridge *bridge;
+bool score_flag = false;
 int count = COUNTDOWN;
 bool reset = true;
 bool crash_flag = false;
@@ -125,6 +126,9 @@ void Render()
 	// Draw vehicle
 	if (reset || crash_flag) {
 		if(crash_flag){
+			if(count == COUNTDOWN){
+				score.away();
+			}
 			glPushMatrix();
 			glTranslatef(0,0,-100);
 			glScalef(12,12,12);
@@ -158,7 +162,10 @@ void Render()
 			  glutStrokeCharacter(GLUT_STROKE_ROMAN,str[i]);
 			}
 			glPopMatrix();
-			score.Reset();
+			if(!score_flag && count == COUNTDOWN){
+				score.Reset();
+			}
+			score_flag = false;
 		}
 		if(count == 0){
 			reset = false;
@@ -227,6 +234,18 @@ void Idle()
 		bool crash1 = car_model1->Move(turns,2*R+D,dt);
 		bool crash2 = car_model2->Move(turns,2*R+D/4,dt);
 
+		if(car_model1->GetRounds() == ROUNDS){
+			score.home();
+			reset = true;
+			score_flag = true;
+			count = COUNTDOWN;
+		}
+		else if(car_model2->GetRounds() == ROUNDS){
+			score.away();
+			reset = true;
+			score_flag = true;
+			count = COUNTDOWN;
+		}
 		if (crash1 || (crash2 && players == PLAYER2)) {
 			crash_flag = true;
 			count = COUNTDOWN;
@@ -472,6 +491,21 @@ void print_velocity(float current){
 	  glutStrokeCharacter(GLUT_STROKE_ROMAN,str[i]);
 	}
 	glPopMatrix();
+
+	sprintf(str,"dt: %.1lf",dt);
+	glPushMatrix();
+	glTranslatef(-4*L,L/4,0);
+	glScalef(5.4,5.4,5.4);
+	glRotatef(-20,1,0,0);
+	//glRotatef(-20,0,1,0);
+	glColor3f(1.0,0.0,1.0);
+	glTranslatef(30,28.0,0.0);
+	glScalef(size,size,size);
+	for (int i=0;i<strlen(str);i++){
+	  glutStrokeCharacter(GLUT_STROKE_ROMAN,str[i]);
+	}
+	glPopMatrix();
+
 
 	glPopMatrix();
 }
