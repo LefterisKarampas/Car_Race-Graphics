@@ -60,8 +60,8 @@ Model* car;
 CarModel* car_model1;
 CarModel* car_model2;
 Bridge *bridge;
-int count = 0;
-bool reset = false;
+int count = COUNTDOWN;
+bool reset = true;
 bool crash_flag = false;
 int start = 0;
 int v = 0;
@@ -337,6 +337,7 @@ void MyKeyboardFunc(unsigned char Key, int x, int y){
 	switch(Key){
 		case 's':{
 			start = (start +1) % 2;
+			reset = false;
 			count = 0;
 			break;
 		}
