@@ -51,18 +51,22 @@ void Score::Reset(){
 	this->away_score = 0;
 }
 
-int Score::GetHome() {
-	return home_score;
+void Score::SaveScore() {
+  FILE* file = fopen("score","w");
+  fprintf(file, "%d %d\n", home_score, away_score);
+  fclose(file);
 }
 
-int Score::GetAway() {
-	return away_score;
-}
-
-int Score::SetHome(int home) {
-	home_score = home;
-}
-
-int Score::SetAway(int away) {
-	away_score = away;
+void Score::LoadScore() {
+  FILE* file = fopen("score","r");
+  int home, away;
+  if (file != NULL) {
+    int ret = fscanf(file, "%d %d\n", &home, &away);
+    fprintf(stderr, "%d\n", ret);
+    if (ret == 2) {
+      home_score = home;
+      away_score = away;
+    }
+    fclose(file);
+  }
 }

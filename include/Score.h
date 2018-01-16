@@ -12,10 +12,8 @@ public:
 	void home();
 	void away();
 	void Reset();
-  int GetHome();
-  int GetAway();
-  int SetHome(int home);
-  int SetAway(int away);
+  void SaveScore();
+  void LoadScore();
 };
 
 #endif
