@@ -9,6 +9,10 @@ void SelectPlayers(int choice);
 
 void MyKeyboardFunc(unsigned char Key, int x, int y);
 
+void MyKeyboardUpFunc(unsigned char Key, int x, int y);
+
+void KeyboardActions();
+
 void ShowInformation(float current);
 
 #endif // FUNCTIONS_H_
