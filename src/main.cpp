@@ -7,6 +7,8 @@
 
 char * light_input;
 char *car_input;
+bool keys[256];
+
 void read_args(int , char **,char ** ,char **);
 
 int main(int argc, char* argv[])
@@ -29,6 +31,7 @@ int main(int argc, char* argv[])
   glutIdleFunc(Idle);
   glutSpecialFunc(Keyboard);
   glutKeyboardFunc(MyKeyboardFunc);
+  glutKeyboardUpFunc(MyKeyboardUpFunc);
   // glutMouseFunc(Mouse);
 
   glutCreateMenu(SelectPlayers);

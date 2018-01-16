@@ -11,6 +11,8 @@
 #include "../include/CarModel.h"
 #include "../include/functions.h"
 
+extern bool keys[256];
+
 extern float dt;
 extern float vA;
 extern float vOr;
@@ -152,72 +154,85 @@ void SelectPlayers(int choice)
 
 
 void MyKeyboardFunc(unsigned char Key, int x, int y){
-  switch(Key){
-    case 's':{
-      start = (start +1) % 2;
-      reset = false;
-      count = 0;
-      break;
-    }
-    case 32:{ //SPACEBAR
-      reset = true;
-      count = COUNTDOWN;
-      start = 0;
-      break;
-    }
-    //Change Camera
-    case 'v':{
-      v = (v+1) % 2;
-      if(v == 0){
-        eye_y = 300.0f;
-        eye_z = 380.0f;
-        board_rotate = 0;
-      }
-      else{
-        eye_y = 1000.0f;
-        eye_z = 100.0f;
-        board_rotate = -55;
-      }
-      break;
-    }
-    case 'e':{
-      dif_level = (dif_level +1) % 3;
-      SelectLevel(dif_level);
-      break;
-    }
-    case 'a':{
-      if((players == PLAYER2) && start){
-        car_model2->SpeedDown(d);
-      }
-      break;
-    }
-    case 'd':{
-      if((players == PLAYER2) && start){
-        car_model2->SpeedUp(a);
-      }
-      break;
-    }
-    case 'p':{
-      if(players == PLAYER1){
-        SelectPlayers(PLAYER2);
-      }
-      else{
-        SelectPlayers(PLAYER1);
-      }
-      break;
-    }
-    case 'x':{
-      print_flag = (print_flag +1) % 2;
-      break;
-    }
-    case 'q': {
-      score.SaveScore();
-      free(turns);
-      exit(0);
-      break;
-    }
+  keys[Key] = true;
+
+  glutPostRedisplay();
+}
+
+void MyKeyboardUpFunc(unsigned char Key, int x, int y){
+  // all besides toogle buttons
+  if (Key != 's' && Key != 'v' && Key != 'x') {
+  keys[Key] = false;
   }
   glutPostRedisplay();
+}
+
+void KeyboardActions() {
+  if (keys['s']) {
+    start = (start +1) % 2;
+    reset = false;
+    count = 0;
+    keys['s'] = false;
+  }
+
+  if (keys[32]) { //SPACEBAR
+    reset = true;
+    count = COUNTDOWN;
+    start = 0;
+  }
+
+  //Change Camera
+  if (keys['v']) {
+    v = (v+1) % 2;
+    if(v == 0){
+      eye_y = 300.0f;
+      eye_z = 380.0f;
+      board_rotate = 0;
+    }
+    else{
+      eye_y = 1000.0f;
+      eye_z = 100.0f;
+      board_rotate = -55;
+    }
+    keys['v'] = false;
+  }
+
+  if (keys['e']) {
+    dif_level = (dif_level +1) % 3;
+    SelectLevel(dif_level);
+  }
+
+  if (keys['a']) {
+    if((players == PLAYER2) && start){
+      car_model2->SpeedDown(d);
+    }
+  }
+
+  if (keys['d']) {
+    if((players == PLAYER2) && start){
+      car_model2->SpeedUp(a);
+    }
+  }
+
+  if (keys['p']) {
+    if(players == PLAYER1){
+      SelectPlayers(PLAYER2);
+    }
+    else{
+      SelectPlayers(PLAYER1);
+    }
+  }
+
+  if (keys['x']) {
+    print_flag = (print_flag +1) % 2;
+    keys['x'] = false;
+  }
+
+  if (keys['q']) {
+    score.SaveScore();
+    free(turns);
+    exit(0);
+  }
 }
 
 void ShowInformation(float current){

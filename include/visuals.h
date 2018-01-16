@@ -14,6 +14,8 @@
 #define RIGHT_ARROW 39
 #define ROUNDS 3
 
+#define LIGHTING 0
+
 void Render();
 
 void Resize(int w, int h);

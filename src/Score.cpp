@@ -62,7 +62,6 @@ void Score::LoadScore() {
   int home, away;
   if (file != NULL) {
     int ret = fscanf(file, "%d %d\n", &home, &away);
-    fprintf(stderr, "%d\n", ret);
     if (ret == 2) {
       home_score = home;
       away_score = away;

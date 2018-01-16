@@ -54,6 +54,7 @@ Bridge *bridge;
 bool score_flag = false;
 int count = COUNTDOWN;
 bool reset = false;
+bool player1crashed = false;
 bool crash_flag = false;
 int start = 0;
 int v = 0;
@@ -66,6 +67,7 @@ int print_flag = 0;
 
 void Render()
 {
+	KeyboardActions();
 	//CLEARS FRAME BUFFER ie COLOR BUFFER& DEPTH BUFFER (1.0)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);  // Clean up the colour of the window
 						   // and the depth buffer
@@ -110,7 +112,12 @@ void Render()
 	if (reset || crash_flag) {
 		if(crash_flag){
 			if(count == COUNTDOWN){
-				score.away();
+				if (player1crashed) {
+					score.away();
+				}
+				else {
+					score.home();
+				}
 			}
 			glPushMatrix();
 			glTranslatef(0,0,-100);
@@ -198,6 +205,7 @@ void Idle()
 			if (bridge->Moving()) {
 				crash_flag = true;
 				count = COUNTDOWN;
+				player1crashed = true;
 			}
 		}
 		if (car_model2->ReachedRange(-L + 3*L/2, -L/2 + 3*L/2)) {
@@ -205,6 +213,7 @@ void Idle()
 				if (bridge->Moving()) {
 					crash_flag = true;
 					count = COUNTDOWN;
+					player1crashed = false;
 				}
 			}
 			else{
@@ -234,6 +243,7 @@ void Idle()
 		}
 		if (crash1 || (crash2 && players == PLAYER2)) {
 			crash_flag = true;
+			player1crashed = crash1;
 			count = COUNTDOWN;
 		}
 	}
@@ -244,6 +254,30 @@ void Idle()
 
 void Setup()  // TOUCH IT !! 
 { 
+	if (LIGHTING) {
+	  glShadeModel(GL_SMOOTH);
+	  glEnable(GL_LIGHTING);
+	  glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+	  glEnable(GL_COLOR_MATERIAL);
+	  GLfloat light_position[] = { 200.0, 600.0, -200.0, 0.0 };
+	  glLightfv( GL_LIGHT0, GL_POSITION, light_position);
+
+	  GLfloat ambientLight[] = { 0.0, 0,0, 0,0, 1.0 };
+	  GLfloat diffuseLight[] = { 1.0, 1,0, 1,0, 1.0 };
+	  GLfloat specularLight[] = { 1.0, 1.0, 1.0, 1.0 };
+
+	     
+	  glLightfv( GL_LIGHT0, GL_AMBIENT, ambientLight );
+	  // glLightfv( GL_LIGHT0, GL_DIFFUSE, diffuseLight );
+	  
+	  // glLightfv( GL_LIGHT0, GL_SPECULAR, specularLight);
+	  // GLfloat specref[] = { 1.0, 1.0, 1.0, 1.0 };
+	  // glMaterialfv(GL_FRONT,GL_SPECULAR,specref);
+	  // glMateriali(GL_FRONT,GL_SHININESS,64);
+	  
+	  glEnable(GL_LIGHT0);
+	}
+
 	score.LoadScore();
 	turns = (float*) malloc(2*sizeof(float)); // remember to free this
 	light = new traffic_light(light_input,R,D);
