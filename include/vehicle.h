@@ -19,6 +19,7 @@ class Vehicle
     float GetSpeed();
     void Stop();
     void SetvOr(float);
+    int GetRounds();
     virtual bool ReachedPosition(float x) = 0;
 
   protected:
@@ -35,6 +36,7 @@ class Vehicle
     bool down_;
     short int direction_;
     bool crash_;
+    int rounds_;
 };
 
 #endif

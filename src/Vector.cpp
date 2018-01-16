@@ -10,7 +10,7 @@ Vector2<T>::Vector2(T x,T y){
 
 
 template <typename T>
-Vector2<T>::~Vector2(){};
+Vector2<T>::~Vector2(){}
 
 
 template <typename T>
@@ -32,7 +32,7 @@ Vector3<T>::Vector3(T x,T y,T z):Vector2<T>(x,y){
 }
 
 template <typename T>
-Vector3<T>::~Vector3(){};
+Vector3<T>::~Vector3(){}
 
 template <typename T>
 T Vector3<T>::Get_z(){
