@@ -15,6 +15,7 @@ class CarModel : public Vehicle
     bool ReachedPosition(float x);
     bool ReachedRange(float x1, float x2);
     bool Move(float* turns, float radius, float dt);
+    float GetTime();
 
   private:
     Model* model_;
@@ -23,6 +24,7 @@ class CarModel : public Vehicle
     float startZ_;
     bool turning_;
     int next_turn;
+    float game_time;
 };
 
 #endif // CAR_MODEL_H_

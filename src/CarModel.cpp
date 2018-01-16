@@ -12,7 +12,7 @@ CarModel::CarModel(float u, float u_max, float uOp, Model* model,
   float startX, float startY, float startZ)
   : Vehicle(u, u_max, uOp), model_(model),
     startX_(startX), startY_(startY), startZ_(startZ),
-    turning_(false), next_turn(0) {}
+    turning_(false), next_turn(0),game_time(0) {}
 
 CarModel::~CarModel()
 {}
@@ -21,6 +21,7 @@ void CarModel::Reset(float u) {
   Vehicle::Reset(u);
   turning_ = false;
   next_turn = 0;
+  game_time = 0;
 }
 
 void CarModel::Render(double R, double D, double L)
@@ -97,5 +98,11 @@ bool CarModel::Move(float* turns, float radius, float dt) {
     }
   }
 
+  game_time +=dt;
+
   return crash_;
+}
+
+float CarModel::GetTime(){
+  return game_time;
 }

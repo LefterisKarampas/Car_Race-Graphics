@@ -5,7 +5,7 @@ class Crash{
 public:
 	Crash();
 	~Crash();
-	void Render();
+	void Render(float);
 };
 
 

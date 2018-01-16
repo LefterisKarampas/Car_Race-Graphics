@@ -71,7 +71,7 @@ float eye_z = 380.0f;
 float board_rotate = 0;
 int dif_level = 0;
 int players = 1;
-
+int print_flag = 0;
 
 void Render()
 {
@@ -92,15 +92,7 @@ void Render()
 	}
 	map.Render();
 	glPopMatrix();
-	// light->Render(color);
 
-	glPushMatrix();
-	//glTranslatef(-20,-20,0);
-	glScalef(0.2,0.2,0.2);
-	glRotatef(-90,1.0,0.0,0.0);
-	glRotatef(180,0.0,0.0,1.0);
-	glColor3f(0.1f, 0.3f, 0.3f);
-	glPopMatrix();
 	
 	// Draw bridge
 	glPushMatrix();
@@ -133,7 +125,7 @@ void Render()
 			glTranslatef(0,0,-100);
 			glScalef(12,12,12);
 			glRotatef(0,1,0,0);
-			crash.Render();
+			crash.Render(board_rotate);
 			glPopMatrix();
 		}
 
@@ -175,8 +167,12 @@ void Render()
 			count--;
 		}
 	}
+	glPushMatrix();
+	if(v){
+		glScalef(1.5,1.5,1.5);
+	}
 	score.Render(board_rotate);
-
+	glPopMatrix();
 	print_velocity(car_model1->GetSpeed());
 
 	glPopMatrix();
@@ -421,7 +417,7 @@ void MyKeyboardFunc(unsigned char Key, int x, int y){
 			else{
 				eye_y = 1000.0f;
 				eye_z = 100.0f;
-				board_rotate = -45;
+				board_rotate = -55;
 			}
 			break;
 		}
@@ -451,6 +447,9 @@ void MyKeyboardFunc(unsigned char Key, int x, int y){
 			}
 			break;
 		}
+		case 'x':{
+			print_flag = (print_flag +1) % 2;
+		}
 	}
 	glutPostRedisplay();
 }
@@ -458,17 +457,27 @@ void MyKeyboardFunc(unsigned char Key, int x, int y){
 void print_velocity(float current){
 
 	char str[128];
-	sprintf(str,"Current Velocity: %.2lf",current);
 	glPushMatrix();
 	glTranslatef(0,-80,-400);
-	glScalef(1.2,1.2,1.2);
+	if(print_flag){
+		sprintf(str,"Time elapsed: %.2lf",car_model1->GetTime()/10.0);
+	}
+	else{
+		sprintf(str,"Current Velocity: %.2lf",current);
+	}
+	if(v){
+		glScalef(1.5,1.5,1.5);
+	}
+	else{
+		glScalef(1.2,1.2,1.2);
+	}
 	glRotatef(board_rotate,1,0,0);
+
 	glPushMatrix();
 	glTranslatef(-4*L,0,-0);
 	glScalef(4.5,4.5,4.5);
 	glRotatef(-20,1,0,0);
 	//glRotatef(-20,0,1,0);
-	
 	glColor3f(0.5,1.0,0.5);
 	glTranslatef(30,28.0,0.0);
 	GLfloat size = 0.05f;
@@ -478,27 +487,19 @@ void print_velocity(float current){
 	}
 	glPopMatrix();
 
-	sprintf(str,"Vop: %.2lf",vOr);
+
+	if(print_flag){
+		sprintf(str,"dt: %.1lf",dt);
+	}
+	else{
+		sprintf(str,"Vop: %.2lf",vOr);
+	}
 	glPushMatrix();
 	glTranslatef(-4*L,-L/2,0);
 	glScalef(4.5,4.5,4.5);
 	glRotatef(-20,1,0,0);
 	//glRotatef(-20,0,1,0);
 	glColor3f(1.0,0.0,0.0);
-	glTranslatef(30,28.0,0.0);
-	glScalef(size,size,size);
-	for (int i=0;i<strlen(str);i++){
-	  glutStrokeCharacter(GLUT_STROKE_ROMAN,str[i]);
-	}
-	glPopMatrix();
-
-	sprintf(str,"dt: %.1lf",dt);
-	glPushMatrix();
-	glTranslatef(-4*L,L/4,0);
-	glScalef(5.4,5.4,5.4);
-	glRotatef(-20,1,0,0);
-	//glRotatef(-20,0,1,0);
-	glColor3f(1.0,0.0,1.0);
 	glTranslatef(30,28.0,0.0);
 	glScalef(size,size,size);
 	for (int i=0;i<strlen(str);i++){

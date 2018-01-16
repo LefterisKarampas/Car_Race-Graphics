@@ -12,8 +12,11 @@ Crash::~Crash(){
 	;
 }
 
-void Crash::Render()
+void Crash::Render(float rot)
 {
+	glPushMatrix();
+	glRotatef(rot,1,0,0);
+
 	glPushMatrix();
 	glScalef(5.0,5.0,5.0);
 	glColor3f(1.0,0.8,0.0);
@@ -47,6 +50,8 @@ void Crash::Render()
 	glScalef(size,size,size);
 	for (int i=0;i<strlen(str);i++)
 	  glutStrokeCharacter(GLUT_STROKE_ROMAN,str[i]);
+	glPopMatrix();
+
 	glPopMatrix();
 
 }
