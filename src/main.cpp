@@ -1,10 +1,12 @@
-#include <stdio.h>     			
+#include <stdio.h>     		
+#include <cstring>	
 #include "GL/freeglut.h"            
 #include "../include/visuals.h" 
 
 
 char * light_input;
 char *car_input;
+void read_args(int , char **,char ** ,char **);
 
 int main(int argc, char* argv[])
 { 
@@ -29,13 +31,7 @@ int main(int argc, char* argv[])
   // Create and label the main window
   glutCreateWindow("Race_Car");
 
-  if(argc >= 3){
-    light_input = argv[1];
-    car_input = argv[2];
-  }
-  else{
-    exit(1);
-  }
+  read_args(argc,argv,&light_input,&car_input);
   
   // Configure various properties of the OpenGL rendering context
   Setup();
@@ -49,17 +45,45 @@ int main(int argc, char* argv[])
   glutKeyboardFunc(MyKeyboardFunc);
   glutMouseFunc(Mouse);
 
-  /*glutCreateMenu(MenuSelect);
-  glutAddMenuEntry("Red",RED);
-  glutAddMenuEntry("Blue",BLUE);
-  glutAddMenuEntry("Green",GREEN);
-  glutAddMenuEntry("White",WHITE);
+  glutCreateMenu(MenuSelect);
+  glutAddMenuEntry("Easy",EASY);
+  glutAddMenuEntry("Medium",MEDIUM);
+  glutAddMenuEntry("Hard",HARD);
+  
 	
   // attach the menu to the right button
   glutAttachMenu(GLUT_RIGHT_BUTTON);
-*/
 
   //Enter main event handling loop
   glutMainLoop();
   return 0;	
 }  
+
+
+
+void Usage(char *exec){
+  fprintf(stderr,"Usage: %s -l <traffic_light model> -c <car model>\n",exec);
+}
+
+
+void read_args(int argc, char **argv,char ** light_input,char **car_input){
+  int i=1;
+  while(i < argc){
+    if(!strcmp(argv[i],"-l")){
+      *light_input = argv[i+1];
+    }
+    else if(!strcmp(argv[i],"-c")){
+      *car_input = argv[i+1];
+    }
+    else{
+      Usage(argv[0]);
+      exit(1);
+    }
+    i+=2;
+  }
+
+  if(light_input == NULL || car_input == NULL){
+    Usage(argv[0]);
+    exit(1);
+  }
+}

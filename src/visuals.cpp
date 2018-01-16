@@ -15,8 +15,8 @@
 #include "../include/traffic_light.h"
 #include "../include/CarModel.h"
 
-
-#define BRIDGE_SPEED 2
+#define COUNTDOWN 10
+#define BRIDGE_SPEED 1.3
 #define LEFT_ARROW 37
 #define RIGHT_ARROW 39
 
@@ -27,12 +27,14 @@ double z = 0;
 
 float zoom = 150.0f;
 
+	
 float dt = 1;
 float vA = 20;
-float vOr = 40;
-float vMax = 80;
-float tEid = 5;
+float vOr = 50;
+float vMax = 60;
+float tEid = 10;
 float a = 3;
+float d = 7;
 float dtMax = 3;
 
 extern char * light_input;
@@ -52,22 +54,21 @@ Score score;
 Crash crash;
 traffic_light *light;
 
-char color = 'g';
-//Bridge object
-Bridge bridge(BRIDGE_SPEED, tEid);
 
 Model* car;
 //Vehicle object
 CarModel* car_model1;
 CarModel* car_model2;
-
+Bridge *bridge;
+int count = 0;
 bool reset = false;
 bool crash_flag = false;
 int start = 0;
 int v = 0;
 float eye_y = 300.0f; 
 float eye_z = 380.0f;
-
+float board_rotate = 0;
+int dif_level = 0;
 void Render()
 {
 	//CLEARS FRAME BUFFER ie COLOR BUFFER& DEPTH BUFFER (1.0)
@@ -91,8 +92,8 @@ void Render()
 	glPopMatrix();
 	
 	// Draw bridge
-	bridge.Render(R,D,L);
-	light->Render(bridge.Get_Color());
+	bridge->Render(R,D,L);
+	light->Render(bridge->Get_Color());
 
 	float placementOffset = 80 - L/2;
 
@@ -104,25 +105,51 @@ void Render()
 	car_model2->Render(R,D,L);
 	// Draw vehicle
 	if (reset || crash_flag) {
-		glPushMatrix();
-		glTranslatef(0,0,-100);
-		glScalef(12,12,12);
-		glRotatef(0,1,0,0);
-		if(crash_flag)
+		if(crash_flag){
+			glPushMatrix();
+			glTranslatef(0,0,-100);
+			glScalef(12,12,12);
+			glRotatef(0,1,0,0);
 			crash.Render();
-		glPopMatrix();
+			glPopMatrix();
+		}
 
 		car_model1->Reset(vA);
 		car_model2->Reset(vA);
+		bridge->Reset();
 
 		if(reset){
+			glPushMatrix();
+			char str[7];
+			if(dif_level == EASY){
+				strcpy(str,"EASY");
+			}
+			else if(dif_level == MEDIUM){
+				strcpy(str,"MEDIUM");
+			}
+			else if(dif_level == HARD){
+				strcpy(str,"HARD");
+			}
+			glColor3f(0.7,0.8,0.0);
+			glTranslatef(-600,-1100, -1000);
+			glScalef(3,3,3);
+			glRotatef(-90,1,0,0);
+			//glRotatef(, GLfloat x, GLfloat y, GLfloat z)
+			for (int i=0;i<strlen(str);i++){
+			  glutStrokeCharacter(GLUT_STROKE_ROMAN,str[i]);
+			}
+			glPopMatrix();
 			score.Reset();
 		}
-
-		reset = false;
-		crash_flag = false;
+		if(count == 0){
+			reset = false;
+			crash_flag = false;
+		}
+		else if(count > 0){
+			count--;
+		}
 	}
-	score.Render();
+	score.Render(board_rotate);
 
 	print_velocity(car_model1->GetSpeed());
 
@@ -155,25 +182,27 @@ void Idle()
 {
 	if(start){
 
-		if (car_model1->ReachedRange(-L + 3*L/2, -L/2 + 3*L/2)) {
-			if (bridge.Moving()) {
+		if (car_model1->ReachedRange(-L +3*L/2, -L/2 + 3*L/2)) {
+			if (bridge->Moving()) {
 				crash_flag = true;
+				count = COUNTDOWN;
 			}
 		}
 		if (car_model2->ReachedRange(-L + 3*L/2, -L/2 + 3*L/2)) {
-			if (bridge.Moving()) {
+			if (bridge->Closing()) {
 				car_model2->Stop();
 			}
 			else {
 				car_model2->SetSpeed(vA);
 			}
 		}
-		bridge.Move(dt);
+		bridge->Move(dt);
 		bool crash1 = car_model1->Move(turns,2*R+D,dt);
 		bool crash2 = car_model2->Move(turns,2*R+D/4,dt);
 
 		if (crash1) {
 			crash_flag = true;
+			count = COUNTDOWN;
 		}
 	}
 
@@ -183,39 +212,41 @@ void Idle()
 
 
 void Keyboard(int key,int x,int y)
-{
-	switch(key)
-	{
-		case GLUT_KEY_LEFT:
-			car_model1->SpeedDown(a);
-			break;
-		case GLUT_KEY_RIGHT:
-			car_model1->SpeedUp(a);
-			break;
-		case GLUT_KEY_UP:
-			if (dt >= 2.0f) {
-				dt += 0.1f;
-			}
-			else {
-				dt += 0.2f;	
-			}
-			if (dt > dtMax) {
-				dt = dtMax;
-			}
-			break;
-		case GLUT_KEY_DOWN:
-			if (dt <= 2.0f) {
-				dt -= 0.1f;
-			}
-			else {
-				dt -= 0.2f;	
-			}
-			if (dt < 1) {
-				dt = 1;
-			}
-			break;
-		default: 
-			return;
+{	
+	if(start){
+		switch(key)
+		{
+			case GLUT_KEY_LEFT:
+				car_model1->SpeedDown(d);
+				break;
+			case GLUT_KEY_RIGHT:
+				car_model1->SpeedUp(a);
+				break;
+			case GLUT_KEY_UP:
+				if (dt >= 2.0f) {
+					dt += 0.1f;
+				}
+				else {
+					dt += 0.2f;	
+				}
+				if (dt > dtMax) {
+					dt = dtMax;
+				}
+				break;
+			case GLUT_KEY_DOWN:
+				if (dt <= 2.0f) {
+					dt -= 0.1f;
+				}
+				else {
+					dt -= 0.2f;	
+				}
+				if (dt < 1) {
+					dt = 1;
+				}
+				break;
+			default: 
+				return;
+		}
 	}
 	glutPostRedisplay();
 
@@ -242,6 +273,7 @@ void Setup()  // TOUCH IT !!
 	car = new Model(car_input);
 	car_model1 = new CarModel(vA, vMax, vOr, car, -L/2 - 120,-R-D, 40);
 	car_model2 = new CarModel(vA, vMax, vOr, car, -L/2 - 120,-R-D, -40);
+	bridge = new Bridge(BRIDGE_SPEED, tEid);
 	//Parameter handling
 	glShadeModel (GL_SMOOTH);
 	
@@ -258,21 +290,59 @@ void Setup()  // TOUCH IT !!
 void MenuSelect(int choice)
 {
 	switch (choice) {
-		default:
+		case EASY : 
+			d = 7; 
+			tEid = 10;
+			vOr = 50;
+			car_model1->SetvOr(vOr);
+			car_model2->SetvOr(vOr);
+			bridge->SetTEid(tEid);
+			reset = true;
+			count = COUNTDOWN;
+			start = 0;
+			dif_level = choice;
+			break;
+		case MEDIUM : 
+			d = 4; 
+			tEid = 8;
+			vOr = 40;
+			car_model1->SetvOr(vOr);
+			car_model2->SetvOr(vOr);
+			bridge->SetTEid(tEid);
+			reset = true;
+			count = COUNTDOWN;
+			start = 0;
+			dif_level = choice;
+			break;
+		case HARD :
+			d = a;
+			tEid = 5;
+			vOr = 30;
+			car_model1->SetvOr(vOr);
+			car_model2->SetvOr(vOr);
+			bridge->SetTEid(tEid);
+			reset = true;
+			count = COUNTDOWN;
+			start = 0;
+			dif_level = choice;
 			break;
 	}
-	glutPostRedisplay();
+	glPopMatrix();
+
 }
+
 
 
 void MyKeyboardFunc(unsigned char Key, int x, int y){
 	switch(Key){
 		case 's':{
 			start = (start +1) % 2;
+			count = 0;
 			break;
 		}
 		case 32:{	//SPACEBAR
 			reset = true;
+			count = COUNTDOWN;
 			start = 0;
 			break;
 		}
@@ -282,33 +352,36 @@ void MyKeyboardFunc(unsigned char Key, int x, int y){
 			if(v == 0){
 				eye_y = 300.0f;
 				eye_z = 380.0f;
+				board_rotate = 0;
 			}
 			else{
-				;
+				eye_y = 1000.0f;
+				eye_z = 100.0f;
+				board_rotate = -45;
 			}
+		}
+		case 'e':{
+			dif_level = (dif_level +1) % 3;
+			MenuSelect(dif_level);
 		}
 	}
 	glutPostRedisplay();
 }
 
 void print_velocity(float current){
+
 	char str[128];
 	sprintf(str,"Current Velocity: %.2lf",current);
 	glPushMatrix();
-	glTranslatef(0,-80,-450);
+	glTranslatef(0,-80,-400);
 	glScalef(1.2,1.2,1.2);
+	glRotatef(board_rotate,1,0,0);
 	glPushMatrix();
 	glTranslatef(-4*L,0,-0);
 	glScalef(4.5,4.5,4.5);
 	glRotatef(-20,1,0,0);
 	//glRotatef(-20,0,1,0);
-	glColor3f(0.0,0.0,0.0);
-	glBegin(GL_LINE_LOOP);
-	glVertex2f(20,0);
-	glVertex2f(20,40);
-	glVertex2f(120,40);
-	glVertex2f(120,0);
-	glEnd();
+	
 	glColor3f(0.5,1.0,0.5);
 	glTranslatef(30,28.0,0.0);
 	GLfloat size = 0.05f;

@@ -13,13 +13,13 @@ Score::~Score(){
 	;
 }
 
-void Score::Render(){
+void Score::Render(float board_rotate){
 	char str[128];
 	sprintf(str,"Score: %d - %d",this->home_score,this->away_score);
 	glPushMatrix();
 	glTranslatef(50,0,-200);
 	glScalef(4,4,4);
-	glRotatef(-20,1,0,0);
+	glRotatef(-20+board_rotate,1,0,0);
 	//glRotatef(-20,0,1,0);
 	glColor3f(1.0,0.0,0.0);
 	glBegin(GL_LINE_LOOP);

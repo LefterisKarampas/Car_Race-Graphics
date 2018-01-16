@@ -8,7 +8,7 @@ class Score{
 public:
 	Score();
 	~Score();
-	void Render();
+	void Render(float);
 	void home();
 	void away();
 	void Reset();

@@ -82,11 +82,29 @@ void Bridge::Move(float dt) {
   }
 }
 
+void Bridge::Reset(){
+  this->angle_ = 0.0;
+  this->full_ = false; 
+  this->moving_ = false; 
+  this->nextWarningTime_ = 0; 
+  this->nextMoveTime_ = 0;
+  this->t_ = 0;
+}
+
 bool Bridge::Moving() {
   return moving_;
+}
+
+bool Bridge::Closing(){
+  return (this->color == 'o' || this->color == 'r');
 }
 
 
 char Bridge::Get_Color(){
   return this->color;
 }
+
+void Bridge::SetTEid(float tEid){
+  this->warning_time = tEid;
+}
+

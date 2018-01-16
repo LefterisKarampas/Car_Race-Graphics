@@ -18,6 +18,7 @@ class Vehicle
     void SetSpeed(float u);
     float GetSpeed();
     void Stop();
+    void SetvOr(float);
     virtual bool ReachedPosition(float x) = 0;
 
   protected:

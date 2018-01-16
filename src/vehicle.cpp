@@ -115,3 +115,7 @@ float Vehicle::GetSpeed() {
 void Vehicle::Stop() {
   u_ = 0;
 }
+
+void Vehicle::SetvOr(float uop){
+  this->uOp_ = uop;
+}

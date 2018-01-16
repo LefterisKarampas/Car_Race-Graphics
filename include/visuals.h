@@ -1,7 +1,6 @@
-#define RED 1
-#define GREEN 2
-#define BLUE 3
-#define WHITE 4
+#define EASY 0
+#define MEDIUM 1
+#define HARD 2
 
 
 

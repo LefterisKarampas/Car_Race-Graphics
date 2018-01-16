@@ -9,8 +9,11 @@ class Bridge {
     ~Bridge();
     void Render(double R, double D, double L);
     void Move(float dt);
+    void Reset();
     bool Moving();
+    bool Closing();
     char Get_Color();
+    void SetTEid(float);
   private:
     float angle_;
     bool moving_;
