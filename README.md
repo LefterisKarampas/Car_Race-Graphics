@@ -21,7 +21,7 @@ You can change the difficulty level, the camera view or the game speed time.
        Right Arrow - Increase the velocity
        Left Arrow - Decrease the velocity
        
-    ### Game 
+   ### Game 
         Up Arrow - Increase the dt
         Down Arrow - Decrease dt
         s - Start/Stop game
