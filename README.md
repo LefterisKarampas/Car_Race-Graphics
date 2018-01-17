@@ -20,6 +20,7 @@ You can change the difficulty level, the camera view or the game speed time.
    ### Player 1
        Right Arrow - Increase the velocity
        Left Arrow - Decrease the velocity
+       
     ### Game 
         Up Arrow - Increase the dt
         Down Arrow - Decrease dt
@@ -30,6 +31,7 @@ You can change the difficulty level, the camera view or the game speed time.
         e - Change difficulty level (EASY,MEDIUM,HARD)
         q - Save the score and quit the game
         SPACEBAR - Restart the game
+        
    ### Player 2
        d - Increase the velocity for player 2 (2 players mode)
        a - Decrease the velocity for player 2 (2 players mode)
