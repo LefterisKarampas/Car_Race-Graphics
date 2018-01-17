@@ -16,26 +16,28 @@ Press s for starting the race!
 Win the game by finishing first on 3 rounds without crashing on the bridge or getting out of the turn due to high speed.
 You can change the difficulty level, the camera view or the game speed time.
    
-## 3) Keyboard
-    Right Arrow - Increase the velocity
-    Left Arrow - Decrease the velocity
+## 4) Keyboard
+  ### Player 1
+      Right Arrow - Increase the velocity
+      Left Arrow - Decrease the velocity
     
-    Up Arrow - Increase the dt
-    Down Arrow - Decrease dt
+ ### Game 
+        Up Arrow - Increase the dt
+        Down Arrow - Decrease dt
+
+        s - Start/Stop game
+        v - Change camera view
+        x - Change info
+        p - Select 1 player or 2 players
+        e - Change difficulty level (EASY,MEDIUM,HARD)
+        q - Save the score and quit the game
+
+        SPACEBAR - Restart the game
     
-    s - Start/Stop game
-    v - Change camera view
-    x - Change info
-    p - Select 1 player or 2 players
-    e - Change difficulty level (EASY,MEDIUM,HARD)
-    q - Save the score and quit the game
-    
-    SPACEBAR - Restart the game
-    
+### Player 2
     d - Increase the velocity for player 2 (2 players mode)
     a - Decrease the velocity for player 2 (2 players mode)
     
-## 4) Mouse
+## 5) Mouse
     Right Click - Difficulty Menu
-    
     Left Click - Player Menu
