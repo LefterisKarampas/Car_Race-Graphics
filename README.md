@@ -8,7 +8,11 @@ Car Race for Graphics Assignment on OpenGL
 ## 2)Run game
     ./build/race -l Models/trafficlight.obj -c Models/clk.obj
     
-    Press s 
+    Press s
+    
+## 3)Guide
+    Win the game by finishing first on 3 rounds without crashing on the bridge or get out of the turn due to high speed.
+    You can change the difficulty level, the camera view or the game speed time.
    
 ## 3) Keyboard
     1. Right Arrow - Increase the velocity
@@ -22,6 +26,8 @@ Car Race for Graphics Assignment on OpenGL
     9. e - Change difficulty level (EASY,MEDIUM,HARD)
     10. q - Save the score and quit the game
     11. SPACEBAR - Restart the game
+    12. d - Increase the velocity for player 2 (2 players mode)
+    13. a - Decrease the velocity for player 2 (2 players mode)
     
 ## 4) Mouse
     1. Right Click - Difficulty Menu
