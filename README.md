@@ -6,7 +6,7 @@ Car Race for Graphics Assignment on OpenGL
     sudo apt-get install freeglut3 freeglut3-dev  
     
 ## 2)Run game
-    make clean
+    mkdir -p build
     make
     ./build/race -l Models/trafficlight.obj -c Models/clk.obj
     
