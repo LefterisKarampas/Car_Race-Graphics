@@ -7,18 +7,21 @@ Car Race for Graphics Assignment on OpenGL
     
 ## 2)Run game
     ./build/race -l Models/trafficlight.obj -c Models/clk.obj
+    
+    Press s 
    
 ## 3) Keyboard
     1. Right Arrow - Increase the velocity
     2. Left Arrow - Decrease the velocity
     3. Up Arrow - Increase the dt
     4. Down Arrow - Decrease dt
-    5. v - Change camera view
-    6. x - Change info
-    7. p - Select 1 player or 2 players
-    8. e - Change difficulty level (EASY,MEDIUM,HARD)
-    9. q - Save the score and quit the game
-    10. SPACEBAR - Restart the game
+    5. s - Start/Stop game
+    6. v - Change camera view
+    7. x - Change info
+    8. p - Select 1 player or 2 players
+    9. e - Change difficulty level (EASY,MEDIUM,HARD)
+    10. q - Save the score and quit the game
+    11. SPACEBAR - Restart the game
     
 ## 4) Mouse
     1. Right Click - Difficulty Menu
