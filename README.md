@@ -13,7 +13,7 @@ Car Race for Graphics Assignment on OpenGL
 Press s for starting the race!
     
 ## 3)Guide
-Win the game by finishing first on 3 rounds without crashing on the bridge or get out of the turn due to high speed.
+Win the game by finishing first on 3 rounds without crashing on the bridge or getting out of the turn due to high speed.
 You can change the difficulty level, the camera view or the game speed time.
    
 ## 3) Keyboard
